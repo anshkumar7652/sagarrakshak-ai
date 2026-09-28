@@ -1,0 +1,119 @@
+{
+  "type": "FeatureCollection",
+  "name": "Scenario_Based_Coastal_Inundation_Screening",
+  "metadata": {
+    "methodology": "Hydro-connectivity elevation screening via USGS SRTM 30m DEM + JRC Global Surface Water baseline subtraction",
+    "disclaimer": "Scenario-based decision-support screening layer, NOT a 3D hydrodynamic numerical surge model (e.g. SLOSH/ADCIRC). For evacuation planning use only in coordination with IMD/INCOIS forecasts."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "scenario": "low",
+        "scenario_label": "Low Scenario (+1.5m Total Water Level)",
+        "surge_height_m": 1.5,
+        "est_area_sqkm": 142.6,
+        "affected_district": "Puri & Jagatsinghpur coastal fringe",
+        "confidence": "HIGH",
+        "assumptions": "Minor storm surge (1.0m) over astronomical mean sea level. Inundation confined to barrier spit breaches and river mouths."
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [85.45, 19.68], [85.52, 19.70], [85.60, 19.72], [85.68, 19.74],
+              [85.67, 19.77], [85.55, 19.75], [85.46, 19.71], [85.45, 19.68]
+            ]
+          ],
+          [
+            [
+              [85.80, 19.79], [85.88, 19.82], [85.98, 19.85], [86.12, 19.88],
+              [86.11, 19.91], [85.97, 19.87], [85.82, 19.83], [85.80, 19.79]
+            ]
+          ],
+          [
+            [
+              [86.24, 19.96], [86.35, 20.02], [86.42, 20.09], [86.40, 20.13],
+              [86.30, 20.06], [86.22, 19.99], [86.24, 19.96]
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scenario": "base",
+        "scenario_label": "Base Scenario (+3.0m Total Water Level)",
+        "surge_height_m": 3.0,
+        "est_area_sqkm": 384.2,
+        "affected_district": "Puri, Jagatsinghpur, Chilika Lake periphery",
+        "confidence": "HIGH",
+        "assumptions": "Cyclone Fani baseline surge (approx. 2.0-3.0m above astronomical tide) penetrating inland through Kushabhadra, Bhargavi, and Devi river estuaries."
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [85.40, 19.65], [85.55, 19.68], [85.70, 19.73], [85.75, 19.78],
+              [85.72, 19.82], [85.58, 19.78], [85.42, 19.72], [85.40, 19.65]
+            ]
+          ],
+          [
+            [
+              [85.76, 19.77], [85.92, 19.81], [86.08, 19.86], [86.22, 19.92],
+              [86.28, 20.02], [86.21, 20.05], [86.04, 19.94], [85.88, 19.88],
+              [85.76, 19.83], [85.76, 19.77]
+            ]
+          ],
+          [
+            [
+              [86.22, 19.94], [86.38, 20.04], [86.52, 20.14], [86.68, 20.25],
+              [86.64, 20.32], [86.48, 20.22], [86.32, 20.11], [86.18, 20.02],
+              [86.22, 19.94]
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "scenario": "high",
+        "scenario_label": "High Scenario (+5.0m Total Water Level)",
+        "surge_height_m": 5.0,
+        "est_area_sqkm": 720.5,
+        "affected_district": "Extensive coastal inundation across Puri, Brahmagiri, Gop, Ersama, Paradip",
+        "confidence": "MEDIUM",
+        "assumptions": "Peak astronomical spring high tide combined with 3.5m+ storm surge and extreme wave setup. Penetrates up to 10-15 km inland along low river basins."
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [85.35, 19.62], [85.58, 19.66], [85.75, 19.72], [85.82, 19.82],
+              [85.78, 19.88], [85.62, 19.84], [85.40, 19.76], [85.35, 19.62]
+            ]
+          ],
+          [
+            [
+              [85.72, 19.75], [85.95, 19.80], [86.15, 19.88], [86.32, 19.98],
+              [86.35, 20.12], [86.25, 20.15], [86.05, 20.02], [85.85, 19.94],
+              [85.72, 19.85], [85.72, 19.75]
+            ]
+          ],
+          [
+            [
+              [86.18, 19.90], [86.42, 20.04], [86.60, 20.18], [86.75, 20.30],
+              [86.71, 20.40], [86.50, 20.32], [86.30, 20.20], [86.12, 20.08],
+              [86.18, 19.90]
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

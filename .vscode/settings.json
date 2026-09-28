@@ -1,0 +1,11 @@
+{
+  "python.analysis.extraPaths": [
+    "./services/api"
+  ],
+  "python.autoComplete.extraPaths": [
+    "./services/api"
+  ],
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none"
+  }
+}

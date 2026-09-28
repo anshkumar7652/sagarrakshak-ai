@@ -1,0 +1,103 @@
+{
+  "cyclone_id": "NIO_2019_01_FANI",
+  "name": "Cyclone Fani",
+  "basin": "North Indian Ocean (Bay of Bengal)",
+  "category": "Extremely Severe Cyclonic Storm (ESCS)",
+  "max_wind_kmh": 215,
+  "min_pressure_hpa": 932,
+  "landfall_location": "Puri, Odisha, India",
+  "landfall_time": "2019-05-03T03:30:00Z",
+  "source": "NOAA IBTrACS v4 & IMD Best Track Archive",
+  "track_points": [
+    {
+      "timestamp": "2019-05-01T00:00:00Z",
+      "lat": 13.8,
+      "lon": 84.8,
+      "wind_kmh": 175,
+      "pressure_hpa": 950,
+      "category": "Very Severe Cyclonic Storm",
+      "cone_radius_km": 110,
+      "stage": "Approach"
+    },
+    {
+      "timestamp": "2019-05-01T12:00:00Z",
+      "lat": 14.9,
+      "lon": 84.5,
+      "wind_kmh": 195,
+      "pressure_hpa": 942,
+      "category": "Extremely Severe Cyclonic Storm",
+      "cone_radius_km": 95,
+      "stage": "Approach"
+    },
+    {
+      "timestamp": "2019-05-02T00:00:00Z",
+      "lat": 16.1,
+      "lon": 84.7,
+      "wind_kmh": 205,
+      "pressure_hpa": 937,
+      "category": "Extremely Severe Cyclonic Storm",
+      "cone_radius_km": 80,
+      "stage": "Pre-Landfall Warning"
+    },
+    {
+      "timestamp": "2019-05-02T12:00:00Z",
+      "lat": 17.8,
+      "lon": 85.0,
+      "wind_kmh": 215,
+      "pressure_hpa": 932,
+      "category": "Extremely Severe Cyclonic Storm",
+      "cone_radius_km": 65,
+      "stage": "Peak Intensity"
+    },
+    {
+      "timestamp": "2019-05-03T00:00:00Z",
+      "lat": 19.3,
+      "lon": 85.5,
+      "wind_kmh": 215,
+      "pressure_hpa": 934,
+      "category": "Extremely Severe Cyclonic Storm",
+      "cone_radius_km": 50,
+      "stage": "Imminent Landfall"
+    },
+    {
+      "timestamp": "2019-05-03T03:30:00Z",
+      "lat": 19.8,
+      "lon": 85.85,
+      "wind_kmh": 215,
+      "pressure_hpa": 937,
+      "category": "Extremely Severe Cyclonic Storm",
+      "cone_radius_km": 35,
+      "stage": "Landfall (Puri Coast)"
+    },
+    {
+      "timestamp": "2019-05-03T06:00:00Z",
+      "lat": 20.15,
+      "lon": 86.05,
+      "wind_kmh": 185,
+      "pressure_hpa": 948,
+      "category": "Extremely Severe Cyclonic Storm",
+      "cone_radius_km": 40,
+      "stage": "Inland Passage (Bhubaneswar/Cuttack)"
+    },
+    {
+      "timestamp": "2019-05-03T12:00:00Z",
+      "lat": 20.9,
+      "lon": 86.6,
+      "wind_kmh": 140,
+      "pressure_hpa": 965,
+      "category": "Very Severe Cyclonic Storm",
+      "cone_radius_km": 55,
+      "stage": "Northeastward Movement"
+    },
+    {
+      "timestamp": "2019-05-03T18:00:00Z",
+      "lat": 21.6,
+      "lon": 87.2,
+      "wind_kmh": 110,
+      "pressure_hpa": 978,
+      "category": "Severe Cyclonic Storm",
+      "cone_radius_km": 70,
+      "stage": "Depression over West Bengal"
+    }
+  ]
+}

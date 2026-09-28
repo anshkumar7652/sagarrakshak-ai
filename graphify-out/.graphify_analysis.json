@@ -1,0 +1,437 @@
+{
+  "communities": {
+    "0": [
+      "apps_web_src_app_page",
+      "apps_web_src_app_page_dashboardpage",
+      "apps_web_src_app_page_dashboardpage_init",
+      "apps_web_src_app_page_dashboardpage_updateanalysis",
+      "apps_web_src_app_page_mapcomponent",
+      "apps_web_src_components_advisorymodal",
+      "apps_web_src_components_advisorymodal_advisorymodal",
+      "apps_web_src_components_advisorymodal_advisorymodalprops",
+      "apps_web_src_components_assetdetailmodal",
+      "apps_web_src_components_assetdetailmodal_assetdetailmodal",
+      "apps_web_src_components_assetdetailmodal_assetdetailmodalprops",
+      "apps_web_src_components_healthmodal",
+      "apps_web_src_components_healthmodal_healthmodal",
+      "apps_web_src_components_healthmodal_healthmodalprops",
+      "apps_web_src_components_map",
+      "apps_web_src_components_map_mapcomponent",
+      "apps_web_src_components_map_mapcomponent_initleaflet",
+      "apps_web_src_components_map_mapprops",
+      "apps_web_src_components_navbar",
+      "apps_web_src_components_navbar_navbar",
+      "apps_web_src_components_navbar_navbarprops",
+      "apps_web_src_components_risksidebar",
+      "apps_web_src_components_risksidebar_risksidebar",
+      "apps_web_src_components_risksidebar_risksidebarprops",
+      "apps_web_src_components_timescrubber",
+      "apps_web_src_components_timescrubber_timescrubber",
+      "apps_web_src_components_timescrubber_timescrubberprops",
+      "apps_web_src_lib_api",
+      "apps_web_src_lib_api_approveadvisory",
+      "apps_web_src_lib_api_fetchfanitrack",
+      "apps_web_src_lib_api_fetchhealth",
+      "apps_web_src_lib_api_generateadvisory",
+      "apps_web_src_lib_api_getfallbackadvisory",
+      "apps_web_src_lib_api_getfallbackanalysis",
+      "apps_web_src_lib_api_getfallbacktrack",
+      "apps_web_src_lib_api_runanalysis",
+      "apps_web_src_types_index",
+      "apps_web_src_types_index_alternativefacility",
+      "apps_web_src_types_index_analysisrunresponse",
+      "apps_web_src_types_index_assetriskassessment",
+      "apps_web_src_types_index_cyclonetrack",
+      "apps_web_src_types_index_dispatchreceipt",
+      "apps_web_src_types_index_districtrisksummary",
+      "apps_web_src_types_index_float",
+      "apps_web_src_types_index_groundedadvisory",
+      "apps_web_src_types_index_priorityaction",
+      "apps_web_src_types_index_publicalerts",
+      "apps_web_src_types_index_trackpoint",
+      "ref_lucide_react",
+      "ref_react"
+    ],
+    "1": [
+      "apps_web_next_config",
+      "apps_web_next_config_nextconfig",
+      "apps_web_package",
+      "apps_web_package_dependencies",
+      "apps_web_package_dependencies_leaflet",
+      "apps_web_package_dependencies_lucide_react",
+      "apps_web_package_dependencies_next",
+      "apps_web_package_dependencies_react",
+      "apps_web_package_dependencies_react_dom",
+      "apps_web_package_dependencies_types_leaflet",
+      "apps_web_package_devdependencies",
+      "apps_web_package_devdependencies_types_node",
+      "apps_web_package_devdependencies_types_react",
+      "apps_web_package_devdependencies_types_react_dom",
+      "apps_web_package_devdependencies_typescript",
+      "apps_web_package_name",
+      "apps_web_package_private",
+      "apps_web_package_scripts",
+      "apps_web_package_scripts_build",
+      "apps_web_package_scripts_dev",
+      "apps_web_package_scripts_start",
+      "apps_web_package_version",
+      "apps_web_src_app_layout",
+      "apps_web_src_app_layout_metadata",
+      "apps_web_src_app_layout_rootlayout",
+      "apps_web_src_app_layout_viewport",
+      "ref_leaflet",
+      "ref_next",
+      "ref_react_dom",
+      "ref_types_leaflet",
+      "ref_types_node",
+      "ref_types_react",
+      "ref_types_react_dom",
+      "ref_typescript"
+    ],
+    "2": [
+      "services_api_app_config",
+      "services_api_app_config_py_basemodel",
+      "services_api_app_config_riskengineweights",
+      "services_api_app_config_settings",
+      "services_api_app_main",
+      "services_api_app_main_py_get",
+      "services_api_app_main_root",
+      "services_api_app_routers_health",
+      "services_api_app_routers_health_get_system_health",
+      "services_api_app_routers_health_py_get",
+      "services_api_app_routers_health_rationale_11",
+      "services_api_app_services_risk_engine",
+      "services_api_app_services_risk_exposure",
+      "services_api_app_services_risk_exposure_compute_asset_exposure",
+      "services_api_app_services_risk_exposure_py_any",
+      "services_api_app_services_risk_exposure_rationale_16",
+      "services_api_app_services_risk_hazard",
+      "services_api_app_services_risk_hazard_compute_composite_hazard",
+      "services_api_app_services_risk_hazard_compute_inundation_hazard",
+      "services_api_app_services_risk_hazard_compute_rainfall_hazard",
+      "services_api_app_services_risk_hazard_compute_wind_hazard",
+      "services_api_app_services_risk_hazard_py_any",
+      "services_api_app_services_risk_hazard_rationale_31",
+      "services_api_app_services_risk_hazard_rationale_43",
+      "services_api_app_services_risk_hazard_rationale_6",
+      "services_api_app_services_risk_vulnerability",
+      "services_api_app_services_risk_vulnerability_compute_asset_vulnerability",
+      "services_api_app_services_risk_vulnerability_py_any",
+      "services_api_app_services_risk_vulnerability_rationale_5"
+    ],
+    "3": [
+      "groundedadvisory",
+      "services_api_app_models_advisory",
+      "services_api_app_models_advisory_advisoryapprovalrequest",
+      "services_api_app_models_advisory_advisoryevidencepacket",
+      "services_api_app_models_advisory_dispatchreceipt",
+      "services_api_app_models_advisory_groundedadvisory",
+      "services_api_app_models_advisory_priorityaction",
+      "services_api_app_models_advisory_publicalerts",
+      "services_api_app_models_advisory_py_basemodel",
+      "services_api_app_routers_advisory",
+      "services_api_app_routers_advisory_approve_and_dispatch",
+      "services_api_app_routers_advisory_generate_deoc_advisory",
+      "services_api_app_routers_advisory_py_any",
+      "services_api_app_routers_advisory_py_post",
+      "services_api_app_routers_advisory_rationale_18",
+      "services_api_app_routers_advisory_rationale_28",
+      "services_api_app_services_gemini_advisory",
+      "services_api_app_services_gemini_advisory_generate_grounded_advisory",
+      "services_api_app_services_gemini_advisory_py_any",
+      "services_api_app_services_gemini_advisory_rationale_13",
+      "services_api_app_services_gemini_prompts",
+      "services_api_app_services_gemini_prompts_build_evidence_packet_prompt",
+      "tests_test_gemini_schema",
+      "tests_test_gemini_schema_rationale_26",
+      "tests_test_gemini_schema_rationale_6",
+      "tests_test_gemini_schema_test_evidence_id_linkage",
+      "tests_test_gemini_schema_test_grounded_advisory_structure"
+    ],
+    "4": [
+      "analysisrunresponse",
+      "services_api_app_models_analysis",
+      "services_api_app_models_analysis_analysisrunrequest",
+      "services_api_app_models_analysis_analysisrunresponse",
+      "services_api_app_models_analysis_districtrisksummary",
+      "services_api_app_models_analysis_py_basemodel",
+      "services_api_app_models_infrastructure",
+      "services_api_app_models_infrastructure_alternativefacility",
+      "services_api_app_models_infrastructure_assetriskassessment",
+      "services_api_app_models_infrastructure_infrastructureasset",
+      "services_api_app_models_infrastructure_py_basemodel",
+      "services_api_app_routers_analysis_execute_risk_analysis",
+      "services_api_app_routers_analysis_py_post",
+      "services_api_app_routers_analysis_rationale_36",
+      "services_api_app_services_risk_engine_rationale_14",
+      "services_api_app_services_risk_engine_run_risk_analysis",
+      "tests_test_risk_engine",
+      "tests_test_risk_engine_rationale_16",
+      "tests_test_risk_engine_rationale_25",
+      "tests_test_risk_engine_rationale_33",
+      "tests_test_risk_engine_rationale_7",
+      "tests_test_risk_engine_test_inundation_hazard_sensitivity",
+      "tests_test_risk_engine_test_risk_analysis_output_structure",
+      "tests_test_risk_engine_test_risk_ranking_order",
+      "tests_test_risk_engine_test_risk_score_bounds"
+    ],
+    "5": [
+      "cyclonetrack",
+      "services_api_app_models_cyclone",
+      "services_api_app_models_cyclone_cyclonetrack",
+      "services_api_app_models_cyclone_py_basemodel",
+      "services_api_app_models_cyclone_scenariometadata",
+      "services_api_app_models_cyclone_trackpoint",
+      "services_api_app_routers_analysis",
+      "services_api_app_routers_analysis_get_historical_track",
+      "services_api_app_routers_analysis_list_available_scenarios",
+      "services_api_app_routers_analysis_py_get",
+      "services_api_app_routers_analysis_rationale_12",
+      "services_api_app_routers_analysis_rationale_52",
+      "services_api_app_services_ingestion_ibtracs_adapter",
+      "services_api_app_services_ingestion_ibtracs_adapter_get_track_point_at_index",
+      "services_api_app_services_ingestion_ibtracs_adapter_load_fani_track",
+      "services_api_app_services_ingestion_ibtracs_adapter_py_any",
+      "services_api_app_services_ingestion_ibtracs_adapter_rationale_17",
+      "services_api_app_services_ingestion_ibtracs_adapter_rationale_8",
+      "tests_test_adapters_rationale_7",
+      "tests_test_adapters_test_ibtracs_fani_parsing"
+    ],
+    "6": [
+      "apps_web_tsconfig",
+      "apps_web_tsconfig_compileroptions",
+      "apps_web_tsconfig_compileroptions_allowjs",
+      "apps_web_tsconfig_compileroptions_esmoduleinterop",
+      "apps_web_tsconfig_compileroptions_incremental",
+      "apps_web_tsconfig_compileroptions_isolatedmodules",
+      "apps_web_tsconfig_compileroptions_jsx",
+      "apps_web_tsconfig_compileroptions_lib",
+      "apps_web_tsconfig_compileroptions_module",
+      "apps_web_tsconfig_compileroptions_moduleresolution",
+      "apps_web_tsconfig_compileroptions_noemit",
+      "apps_web_tsconfig_compileroptions_paths",
+      "apps_web_tsconfig_compileroptions_plugins",
+      "apps_web_tsconfig_compileroptions_resolvejsonmodule",
+      "apps_web_tsconfig_compileroptions_skiplibcheck",
+      "apps_web_tsconfig_compileroptions_strict",
+      "apps_web_tsconfig_compileroptions_target",
+      "apps_web_tsconfig_exclude",
+      "apps_web_tsconfig_include"
+    ],
+    "7": [
+      "services_api_app_services_gee_engine",
+      "services_api_app_services_gee_engine_fallbacksettings",
+      "services_api_app_services_gee_engine_geeengine",
+      "services_api_app_services_gee_engine_geeengine_get_elevation_data",
+      "services_api_app_services_gee_engine_geeengine_get_population_exposure",
+      "services_api_app_services_gee_engine_geeengine_get_rainfall_summary",
+      "services_api_app_services_gee_engine_geeengine_has_valid_credentials",
+      "services_api_app_services_gee_engine_geeengine_init",
+      "services_api_app_services_gee_engine_geeengine_try_init_earthengine",
+      "services_api_app_services_gee_engine_py_any",
+      "services_api_app_services_gee_engine_rationale_102",
+      "services_api_app_services_gee_engine_rationale_117",
+      "services_api_app_services_gee_engine_rationale_37",
+      "services_api_app_services_gee_engine_rationale_47",
+      "services_api_app_services_gee_engine_rationale_67",
+      "services_api_app_services_gee_engine_rationale_92"
+    ],
+    "8": [
+      "services_api_app_routers_routes",
+      "services_api_app_routers_routes_get_safe_route",
+      "services_api_app_routers_routes_py_get",
+      "services_api_app_routers_routes_rationale_12",
+      "services_api_app_services_routing_safe_routes",
+      "services_api_app_services_routing_safe_routes_compute_safe_evacuation_route",
+      "services_api_app_services_routing_safe_routes_py_any",
+      "services_api_app_services_routing_safe_routes_rationale_4"
+    ],
+    "9": [
+      "services_api_app_services_ingestion_imd_adapter",
+      "services_api_app_services_ingestion_imd_adapter_fetch_imd_live_feed",
+      "services_api_app_services_ingestion_imd_adapter_py_any",
+      "services_api_app_services_ingestion_imd_adapter_rationale_9",
+      "tests_test_adapters",
+      "tests_test_adapters_rationale_18",
+      "tests_test_adapters_test_imd_feed_caching"
+    ],
+    "10": [
+      "services_api_app_models_hazard",
+      "services_api_app_models_hazard_hazardcomponents",
+      "services_api_app_models_hazard_inundationscenarioconfig",
+      "services_api_app_models_hazard_py_basemodel",
+      "services_api_app_models_hazard_rainfallhazardsummary"
+    ],
+    "11": [
+      "services_api_app_init"
+    ],
+    "12": [
+      "services_api_init"
+    ],
+    "13": [
+      "services_init"
+    ]
+  },
+  "cohesion": {
+    "0": 0.0946938775510204,
+    "1": 0.058823529411764705,
+    "2": 0.09359605911330049,
+    "3": 0.11396011396011396,
+    "4": 0.12333333333333334,
+    "5": 0.13157894736842105,
+    "6": 0.10526315789473684,
+    "7": 0.15,
+    "8": 0.25,
+    "9": 0.2857142857142857,
+    "10": 0.6,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0
+  },
+  "gods": [
+    {
+      "id": "services_api_app_services_risk_engine_run_risk_analysis",
+      "label": "run_risk_analysis()",
+      "degree": 19
+    },
+    {
+      "id": "apps_web_tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 16
+    },
+    {
+      "id": "services_api_app_services_gemini_advisory_generate_grounded_advisory",
+      "label": "generate_grounded_advisory()",
+      "degree": 11
+    },
+    {
+      "id": "ref_react",
+      "label": "react",
+      "degree": 9
+    },
+    {
+      "id": "apps_web_src_types_index_assetriskassessment",
+      "label": "AssetRiskAssessment",
+      "degree": 8
+    },
+    {
+      "id": "services_api_app_services_gee_engine_geeengine",
+      "label": "GEEEngine",
+      "degree": 8
+    },
+    {
+      "id": "ref_lucide_react",
+      "label": "lucide-react",
+      "degree": 8
+    },
+    {
+      "id": "services_api_app_services_ingestion_ibtracs_adapter_load_fani_track",
+      "label": "load_fani_track()",
+      "degree": 7
+    },
+    {
+      "id": "apps_web_src_types_index_trackpoint",
+      "label": "TrackPoint",
+      "degree": 6
+    },
+    {
+      "id": "services_api_app_models_cyclone_cyclonetrack",
+      "label": "CycloneTrack",
+      "degree": 6
+    }
+  ],
+  "surprises": [
+    {
+      "source": "test_inundation_hazard_sensitivity()",
+      "target": "compute_inundation_hazard()",
+      "source_files": [
+        "tests/test_risk_engine.py",
+        "services/api/app/services/risk/hazard.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "test_grounded_advisory_structure()",
+      "target": "GroundedAdvisory",
+      "source_files": [
+        "tests/test_gemini_schema.py",
+        "services/api/app/models/advisory.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "test_risk_analysis_output_structure()",
+      "target": "AnalysisRunResponse",
+      "source_files": [
+        "tests/test_risk_engine.py",
+        "services/api/app/models/analysis.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "test_ibtracs_fani_parsing()",
+      "target": "CycloneTrack",
+      "source_files": [
+        "tests/test_adapters.py",
+        "services/api/app/models/cyclone.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "test_evidence_id_linkage()",
+      "target": "generate_grounded_advisory()",
+      "source_files": [
+        "tests/test_gemini_schema.py",
+        "services/api/app/services/gemini/advisory.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `run_risk_analysis()` connect `Risk Analysis` to `Configuration & Settings`, `Cyclone Tracking`?",
+      "why": "High betweenness centrality (0.094) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `load_fani_track()` connect `Cyclone Tracking` to `Risk Analysis`?",
+      "why": "High betweenness centrality (0.059) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 10 inferred relationships involving `run_risk_analysis()` (e.g. with `execute_risk_analysis()` and `AnalysisRunResponse`) actually correct?",
+      "why": "`run_risk_analysis()` has 10 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 6 inferred relationships involving `generate_grounded_advisory()` (e.g. with `generate_deoc_advisory()` and `GroundedAdvisory`) actually correct?",
+      "why": "`generate_grounded_advisory()` has 6 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `HealthModalProps`, `NavbarProps`, `AlternativeFacility` to the rest of the system?",
+      "why": "50 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Risk Dashboard` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0946938775510204 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Project Dependencies` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
