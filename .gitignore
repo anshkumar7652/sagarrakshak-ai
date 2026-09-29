@@ -25,6 +25,8 @@ htmlcov/
 venv/
 env/
 ENV/
+*.db-wal
+*.db-shm
 
 # Node & Next.js
 node_modules/
