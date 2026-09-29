@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Waves, PhoneCall } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function CTABanner() {
   return (
@@ -42,6 +43,8 @@ export function CTABanner() {
       />
 
       <div className="landing-container" style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+        <ScrollReveal variant="zoom-in" duration={650} threshold={0.1}>
+        <div>
         <div
           style={{
             display: 'inline-flex',
@@ -152,6 +155,8 @@ export function CTABanner() {
         >
           24/7 IMD SYNCHRONIZED · ZERO INSTALLATION REQUIRED · COMPLIANT WITH NDMA PROTOCOLS
         </div>
+        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Check, Shield, Layers, FileCode, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function DifferentiatorsSection() {
   const highlights = [
@@ -65,8 +66,14 @@ export function DifferentiatorsSection() {
             }}
           >
             {highlights.map((item, idx) => (
-              <div
+              <ScrollReveal
                 key={idx}
+                variant="zoom-in"
+                delay={idx * 120}
+                duration={600}
+                threshold={0.1}
+              >
+              <div
                 className="interactive-card"
                 style={{
                   background: 'var(--bg-card)',
@@ -95,6 +102,7 @@ export function DifferentiatorsSection() {
                   {item.desc}
                 </p>
               </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -108,6 +116,7 @@ export function DifferentiatorsSection() {
             alignItems: 'center',
           }}
         >
+          <ScrollReveal variant="fade-left" duration={650} threshold={0.08}>
           <div>
             <h3
               style={{
@@ -131,8 +140,10 @@ export function DifferentiatorsSection() {
               <ArrowRight size={16} />
             </Link>
           </div>
+          </ScrollReveal>
 
           {/* Sample Table Card */}
+          <ScrollReveal variant="fade-right" duration={650} delay={100} threshold={0.08}>
           <div
             className="glass-panel"
             style={{
@@ -200,6 +211,7 @@ export function DifferentiatorsSection() {
               ))}
             </div>
           </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

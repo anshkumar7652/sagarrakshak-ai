@@ -12,6 +12,7 @@ import {
   runAnalysis,
   fetchFaniTrack,
   generateAdvisory,
+  getFallbackTrack,
 } from '../../lib/api';
 import { Navbar, PortalView } from '../../components/Navbar';
 import { RiskSidebar } from '../../components/RiskSidebar';
@@ -37,7 +38,7 @@ export default function OperationalDashboardPage() {
   const [inundationScenario, setInundationScenario] = useState<'low' | 'base' | 'high'>('base');
   const [timeStepIndex, setTimeStepIndex] = useState<number>(5); // Landfall peak
   const [analysisData, setAnalysisData] = useState<AnalysisRunResponse | null>(null);
-  const [cycloneTrack, setCycloneTrack] = useState<CycloneTrack | null>(null);
+  const [cycloneTrack, setCycloneTrack] = useState<CycloneTrack>(getFallbackTrack());
   const [selectedAsset, setSelectedAsset] = useState<AssetRiskAssessment | null>(null);
   const [showSafeRoute, setShowSafeRoute] = useState<boolean>(false);
   const [isAdvisoryOpen, setIsAdvisoryOpen] = useState<boolean>(false);
@@ -179,6 +180,7 @@ export default function OperationalDashboardPage() {
                 selectedAsset={selectedAsset}
                 onSelectAsset={setSelectedAsset}
                 showSafeRoute={showSafeRoute}
+                isPlaying={isPlayingTime}
               />
 
               {/* Loading Indicator */}

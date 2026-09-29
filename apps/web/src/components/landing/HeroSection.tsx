@@ -177,7 +177,7 @@ export function HeroSection() {
             >
               <Link
                 href="/dashboard"
-                className="btn-primary"
+                className="btn-primary shimmer-btn-wrapper"
                 style={{
                   fontSize: '1.02rem',
                   padding: '14px 28px',
@@ -236,7 +236,7 @@ export function HeroSection() {
           <div style={{ position: 'relative' }}>
             {/* Visual Glassmorphic Preview Terminal */}
             <div
-              className="glass-panel"
+              className="glass-panel float-animation pulse-glow-box"
               style={{
                 padding: '28px',
                 borderRadius: '24px',
@@ -517,6 +517,50 @@ export function HeroSection() {
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Cryptographically Signed Output</div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator prompt */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '56px',
+            cursor: 'pointer',
+            userSelect: 'none',
+          }}
+          onClick={() => {
+            window.scrollTo({ top: window.innerHeight * 0.82, behavior: 'smooth' });
+          }}
+        >
+          <span
+            style={{
+              fontSize: '0.72rem',
+              fontFamily: 'JetBrains Mono, monospace',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--text-muted)',
+              marginBottom: '8px',
+              fontWeight: 600,
+            }}
+          >
+            SCROLL TO EXPLORE
+          </span>
+          <div style={{ animation: 'bounce-subtle 2s ease-in-out infinite' }}>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--accent-primary)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </div>
         </div>
       </div>

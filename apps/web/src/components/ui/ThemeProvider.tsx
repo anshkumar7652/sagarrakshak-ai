@@ -11,24 +11,23 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
+  theme: 'light',
   toggleTheme: () => {},
   setTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check saved theme or system preference
-    const savedTheme = localStorage.getItem('sagarrakshak_theme') as Theme | null;
+    // Check saved theme or default to light
+    const savedTheme = localStorage.getItem('sagarrakshak_theme_v2') as Theme | null;
     if (savedTheme === 'light' || savedTheme === 'dark') {
       setThemeState(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
     } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const initialTheme: Theme = prefersDark ? 'dark' : 'light';
+      const initialTheme: Theme = 'light';
       setThemeState(initialTheme);
       document.documentElement.setAttribute('data-theme', initialTheme);
     }
@@ -37,7 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem('sagarrakshak_theme', newTheme);
+    localStorage.setItem('sagarrakshak_theme_v2', newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
   };
 

@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   ArrowRight
 } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function FeaturesGrid() {
   const features = [
@@ -68,35 +69,37 @@ export function FeaturesGrid() {
     <section id="capabilities" style={{ padding: '90px 0', background: 'var(--bg-primary)' }}>
       <div className="landing-container">
         {/* Section Header */}
-        <div style={{ marginBottom: '48px', maxWidth: '640px' }}>
-          <div
-            style={{
-              display: 'inline-block',
-              fontSize: '0.76rem',
-              fontWeight: 700,
-              fontFamily: 'JetBrains Mono, monospace',
-              color: 'var(--accent-cta)',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              marginBottom: '12px',
-            }}
-          >
-            SERVICES &amp; CAPABILITIES
+        <ScrollReveal variant="fade-up" duration={600} threshold={0.08}>
+          <div style={{ marginBottom: '48px', maxWidth: '640px' }}>
+            <div
+              style={{
+                display: 'inline-block',
+                fontSize: '0.76rem',
+                fontWeight: 700,
+                fontFamily: 'JetBrains Mono, monospace',
+                color: 'var(--accent-cta)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                marginBottom: '12px',
+              }}
+            >
+              SERVICES &amp; CAPABILITIES
+            </div>
+            <h2
+              style={{
+                fontSize: 'clamp(2rem, 3.8vw, 2.8rem)',
+                fontWeight: 800,
+                letterSpacing: '-0.025em',
+                marginBottom: '16px',
+              }}
+            >
+              Built for High-Stakes Operations.
+            </h2>
+            <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+              Every module in SagarRakshak AI is engineered to turn millions of data points into decisive, zero-delay actions for disaster management commissioners and emergency responders.
+            </p>
           </div>
-          <h2
-            style={{
-              fontSize: 'clamp(2rem, 3.8vw, 2.8rem)',
-              fontWeight: 800,
-              letterSpacing: '-0.025em',
-              marginBottom: '16px',
-            }}
-          >
-            Built for High-Stakes Operations.
-          </h2>
-          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            Every module in SagarRakshak AI is engineered to turn millions of data points into decisive, zero-delay actions for disaster management commissioners and emergency responders.
-          </p>
-        </div>
+        </ScrollReveal>
 
         {/* 2x3 Grid */}
         <div
@@ -107,8 +110,14 @@ export function FeaturesGrid() {
           }}
         >
           {features.map((item, idx) => (
-            <div
+            <ScrollReveal
               key={idx}
+              variant="fade-up"
+              delay={idx * 100}
+              duration={600}
+              threshold={0.1}
+            >
+            <div
               className="interactive-card"
               style={{
                 display: 'flex',
@@ -199,6 +208,7 @@ export function FeaturesGrid() {
                 </Link>
               </div>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

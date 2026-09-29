@@ -6,54 +6,8 @@
    ========================================================================== */
 
 :root,
-[data-theme="dark"] {
-  /* DARK THEME (Default) — Deep Midnight & High-Tech Cyan/Emerald Accents */
-  --bg-primary: #060913;
-  --bg-surface: #0c1222;
-  --bg-surface-elevated: #111a30;
-  --bg-card: rgba(15, 23, 42, 0.75);
-  --bg-card-hover: rgba(22, 34, 62, 0.95);
-  --bg-glass: rgba(12, 20, 38, 0.72);
-  --bg-hero: radial-gradient(circle at 50% 20%, #0d1e38 0%, #060913 70%);
-  --bg-footer: #04070d;
-  --bg-badge: rgba(56, 189, 248, 0.12);
-
-  /* Text & Content */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-inverse: #060913;
-
-  /* Borders & Dividers */
-  --border-subtle: rgba(56, 189, 248, 0.15);
-  --border-hover: rgba(56, 189, 248, 0.4);
-  --border-glow: rgba(56, 189, 248, 0.4);
-  --border-card: rgba(255, 255, 255, 0.08);
-
-  /* Accents & Brand Palette */
-  --accent-primary: #38bdf8;
-  --accent-cyan: #00f0ff;
-  --accent-emerald: #10b981;
-  --accent-cta: #10b981;
-  --accent-cta-hover: #059669;
-  --accent-cta-text: #ffffff;
-  --accent-amber: #f59e0b;
-  --accent-red: #ef4444;
-  --accent-indigo: #6366f1;
-
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.7);
-  --shadow-glow: 0 0 24px rgba(0, 240, 255, 0.25);
-  --shadow-glow-emerald: 0 0 24px rgba(16, 185, 129, 0.3);
-
-  /* Overlay */
-  --overlay-bg: rgba(6, 9, 19, 0.85);
-}
-
 [data-theme="light"] {
-  /* LIGHT THEME — Clean Slate White, Navy Ink & Forest Emerald Accents */
+  /* LIGHT THEME (Default) — Clean Slate White, Navy Ink & Forest Emerald Accents */
   --bg-primary: #ffffff;
   --bg-surface: #f8fafc;
   --bg-surface-elevated: #f1f5f9;
@@ -96,6 +50,52 @@
 
   /* Overlay */
   --overlay-bg: rgba(15, 23, 42, 0.5);
+}
+
+[data-theme="dark"] {
+  /* DARK THEME — Deep Midnight & High-Tech Cyan/Emerald Accents */
+  --bg-primary: #060913;
+  --bg-surface: #0c1222;
+  --bg-surface-elevated: #111a30;
+  --bg-card: rgba(15, 23, 42, 0.75);
+  --bg-card-hover: rgba(22, 34, 62, 0.95);
+  --bg-glass: rgba(12, 20, 38, 0.72);
+  --bg-hero: radial-gradient(circle at 50% 20%, #0d1e38 0%, #060913 70%);
+  --bg-footer: #04070d;
+  --bg-badge: rgba(56, 189, 248, 0.12);
+
+  /* Text & Content */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #060913;
+
+  /* Borders & Dividers */
+  --border-subtle: rgba(56, 189, 248, 0.15);
+  --border-hover: rgba(56, 189, 248, 0.4);
+  --border-glow: rgba(56, 189, 248, 0.4);
+  --border-card: rgba(255, 255, 255, 0.08);
+
+  /* Accents & Brand Palette */
+  --accent-primary: #38bdf8;
+  --accent-cyan: #00f0ff;
+  --accent-emerald: #10b981;
+  --accent-cta: #10b981;
+  --accent-cta-hover: #059669;
+  --accent-cta-text: #ffffff;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-indigo: #6366f1;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 24px rgba(0, 240, 255, 0.25);
+  --shadow-glow-emerald: 0 0 24px rgba(16, 185, 129, 0.3);
+
+  /* Overlay */
+  --overlay-bg: rgba(6, 9, 19, 0.85);
 }
 
 /* ==========================================================================
@@ -364,12 +364,140 @@ a {
   border: 1px solid var(--border-glow);
 }
 
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* Leaflet Cyclone Eye Animations */
+@keyframes cyclone-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes radar-pulse {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0.3; }
+  100% { transform: scale(2.3); opacity: 0; }
+}
+
+.cyclone-eye-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cyclone-radar-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #ef4444;
+  animation: radar-pulse 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+.cyclone-radar-ring-2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1.5px solid #f59e0b;
+  animation: radar-pulse 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  animation-delay: 0.75s;
+  pointer-events: none;
+}
+
+.cyclone-spinner {
+  animation: cyclone-spin 4s linear infinite;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   HOMEPAGE DYNAMIC ANIMATIONS (Inspiration: SVGator / High-Tech GIS Portals)
+   ========================================================================== */
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0.4deg);
   }
 }
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.25), 0 0 30px rgba(16, 185, 129, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(0, 240, 255, 0.55), 0 0 50px rgba(16, 185, 129, 0.35);
+  }
+}
+
+@keyframes pipeline-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes shimmer-sheen {
+  0% {
+    transform: translateX(-100%) skewX(-20deg);
+  }
+  40%, 100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.float-animation {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.pulse-glow-box {
+  animation: pulse-glow 3.5s ease-in-out infinite;
+}
+
+.pipeline-energy-line {
+  background: linear-gradient(90deg, #10b981, #00f0ff, #38bdf8, #10b981);
+  background-size: 200% 100%;
+  animation: pipeline-flow 3.5s linear infinite;
+}
+
+.shimmer-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-btn-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: shimmer-sheen 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Enhanced interactive card hover */
+.interactive-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease !important;
+}
+
+.interactive-card:hover {
+  transform: translateY(-6px) scale(1.01) !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.25) !important;
+}
+
+
