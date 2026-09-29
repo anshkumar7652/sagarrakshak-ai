@@ -99,7 +99,64 @@ class GEEEngine:
         }
 
     def get_rainfall_summary(self) -> Dict[str, Any]:
-        """NASA GPM_L3/IMERG_V07 half-hourly accumulated precipitation fixture."""
+        """NASA GPM_L3/IMERG_V07 half-hourly accumulated precipitation fixture or live GEE data."""
+        if self.is_initialized:
+            try:
+                import datetime
+                # Fetch live GPM data for the last 24h
+                end_date = datetime.datetime.now(datetime.timezone.utc)
+                start_date = end_date - datetime.timedelta(days=1)
+                
+                dataset = ee.ImageCollection('NASA/GPM_L3/IMERG_V06') \
+                    .filterDate(start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')) \
+                    .select('precipitationCal')
+                precipitation = dataset.sum()
+                
+                # Query FAO GAUL for district geometries
+                districts = ee.FeatureCollection("FAO/GAUL/2015/level2") \
+                    .filter(ee.Filter.inList('ADM2_NAME', ['Puri', 'Jagatsinghpur', 'Khurda']))
+                
+                def _reduce_district(feature):
+                    mean_dict = precipitation.reduceRegion(
+                        reducer=ee.Reducer.mean(),
+                        geometry=feature.geometry(),
+                        scale=10000,
+                        maxPixels=1e9
+                    )
+                    # precipitationCal is mm/hr, we sum half-hourly images over 24h -> multiply sum by 0.5 for total mm
+                    val = ee.Number(mean_dict.get('precipitationCal')).multiply(0.5)
+                    return feature.set('accum_24h_mm', val)
+                
+                stats = districts.map(_reduce_district).getInfo()
+                
+                def _get_rating(val):
+                    if val > 200: return "EXTREME"
+                    if val > 100: return "VERY_HIGH"
+                    if val > 50: return "HIGH"
+                    return "MODERATE"
+                    
+                district_accumulations = {}
+                if 'features' in stats:
+                    for f in stats['features']:
+                        name = f['properties'].get('ADM2_NAME', 'Unknown')
+                        val = f['properties'].get('accum_24h_mm', 0)
+                        if val is None: val = 0
+                        district_accumulations[name] = {
+                            "accum_24h_mm": round(val, 2),
+                            "hazard_rating": _get_rating(val)
+                        }
+                        
+                if district_accumulations:
+                    logger.info("Successfully fetched live rainfall data from Earth Engine.")
+                    return {
+                        "source": "NASA GPM_L3/IMERG_V06 (Live GEE)",
+                        "district_accumulations_mm": district_accumulations
+                    }
+                    
+            except Exception as e:
+                logger.error(f"Live GEE rainfall query failed, falling back to fixture: {e}")
+
+        # Fallback to fixture
         rain_file = Path(settings.fixtures_path) / "fani_rainfall.json"
         if not rain_file.exists():
             return {
@@ -114,7 +171,34 @@ class GEEEngine:
             return json.load(f)
 
     def get_population_exposure(self, district: str) -> int:
-        """WorldPop/GP/100m/pop population density intersections."""
+        """WorldPop/GP/100m/pop population density intersections live or fallback."""
+        if self.is_initialized:
+            try:
+                dataset = ee.ImageCollection("WorldPop/GP/100m/pop") \
+                    .filter(ee.Filter.eq('country', 'IND')) \
+                    .filter(ee.Filter.eq('year', 2020)) \
+                    .select('population')
+                pop_img = dataset.first()
+                
+                dist_fc = ee.FeatureCollection("FAO/GAUL/2015/level2") \
+                    .filter(ee.Filter.eq('ADM2_NAME', district))
+                
+                stats = pop_img.reduceRegion(
+                    reducer=ee.Reducer.sum(),
+                    geometry=dist_fc.geometry(),
+                    scale=100,
+                    maxPixels=1e10
+                ).getInfo()
+                
+                val = stats.get('population')
+                if val:
+                    logger.info(f"Successfully fetched live population data for {district}.")
+                    return int(val)
+                    
+            except Exception as e:
+                logger.error(f"Live GEE population query failed for {district}, falling back: {e}")
+
+        # Fallback
         baseline_pop = {
             "Puri": 1698733,
             "Jagatsinghpur": 1136971,
