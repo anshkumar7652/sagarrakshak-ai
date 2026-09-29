@@ -113,12 +113,34 @@ npm run dev
 
 ---
 
-### Option 2: Running with Docker Compose
+### Option 2: Running with Docker Compose (Production Setup)
 
-```bash
-docker-compose up --build
-```
-*Frontend runs on port 3000, backend on port 8000.*
+SagarRakshak AI provides production-optimized multi-stage Docker builds for both the Next.js frontend and FastAPI backend:
+
+1. **Configure Environment Variables:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your GEMINI_API_KEY, GEE credentials, and SMTP settings
+   ```
+
+2. **Build and Launch Containers:**
+   ```bash
+   docker compose up --build -d
+   ```
+
+3. **Verify Deployment:**
+   - **Frontend UI:** `http://localhost:3000`
+   - **Backend OpenAPI Docs:** `http://localhost:8000/docs`
+   - **System Health & Latency:** `http://localhost:8000/health`
+
+4. **Manage Containers:**
+   ```bash
+   # Follow live service logs
+   docker compose logs -f
+
+   # Gracefully shut down containers
+   docker compose down
+   ```
 
 ---
 

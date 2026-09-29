@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env
+.env.local
+.vscode
+.pytest_cache
+node_modules
+apps/web/node_modules
+apps/web/.next
+services/api/__pycache__
+services/api/tests
+__pycache__
+*.py[cod]
+*.log

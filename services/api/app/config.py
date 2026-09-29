@@ -5,8 +5,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
-FIXTURES_DIR = BASE_DIR / "data" / "fixtures"
+_env_fixtures = os.getenv("FIXTURES_PATH")
+if _env_fixtures:
+    FIXTURES_DIR = Path(_env_fixtures)
+else:
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+    _candidates = [
+        BASE_DIR / "data" / "fixtures",
+        Path("/app/data/fixtures"),
+        Path(__file__).resolve().parent.parent / "data" / "fixtures",
+        Path("data/fixtures"),
+    ]
+    FIXTURES_DIR = next((p for p in _candidates if p.exists()), BASE_DIR / "data" / "fixtures")
 
 class RiskEngineWeights(BaseModel):
     # Top-level weights (normalized to 1.0)

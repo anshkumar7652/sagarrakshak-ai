@@ -3,13 +3,14 @@ version: '3.8'
 services:
   api:
     build:
-      context: .
+      context: ./services/api
       dockerfile: Dockerfile
+    container_name: sagarrakshak-api
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - GEMINI_MODEL=gemini-2.5-flash
       - PORT=8000
     restart: unless-stopped
 
@@ -17,10 +18,13 @@ services:
     build:
       context: ./apps/web
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    container_name: sagarrakshak-web
     ports:
       - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://api:8000
+    env_file:
+      - .env
     depends_on:
       - api
     restart: unless-stopped

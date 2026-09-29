@@ -1,0 +1,41 @@
+{
+  "source": "NASA GPM_L3/IMERG_V07 & IMD Observed Rainfall Archive",
+  "cyclone_id": "NIO_2019_01_FANI",
+  "observation_window": {
+    "start": "2019-05-02T00:00:00Z",
+    "peak_landfall": "2019-05-03T03:30:00Z",
+    "end": "2019-05-03T23:59:00Z"
+  },
+  "district_accumulations_mm": {
+    "Puri": {
+      "accum_6h_mm": 118.5,
+      "accum_12h_mm": 215.0,
+      "accum_24h_mm": 312.4,
+      "historical_percentile": 99.8,
+      "hazard_rating": "EXTREME",
+      "soil_saturation_index": 0.94
+    },
+    "Jagatsinghpur": {
+      "accum_6h_mm": 94.2,
+      "accum_12h_mm": 178.6,
+      "accum_24h_mm": 268.0,
+      "historical_percentile": 99.2,
+      "hazard_rating": "VERY_HIGH",
+      "soil_saturation_index": 0.88
+    },
+    "Khurda": {
+      "accum_6h_mm": 72.0,
+      "accum_12h_mm": 135.4,
+      "accum_24h_mm": 198.2,
+      "historical_percentile": 97.5,
+      "hazard_rating": "HIGH",
+      "soil_saturation_index": 0.82
+    }
+  },
+  "rainfall_hotspots": [
+    { "name": "Puri Town", "lat": 19.81, "lon": 85.83, "max_hourly_rate_mm": 48.0, "risk": "CRITICAL_WATERLOGGING" },
+    { "name": "Konark", "lat": 19.89, "lon": 86.11, "max_hourly_rate_mm": 42.5, "risk": "CRITICAL_FLASH_FLOOD" },
+    { "name": "Ersama", "lat": 20.15, "lon": 86.42, "max_hourly_rate_mm": 39.0, "risk": "HIGH_WATERLOGGING" },
+    { "name": "Bhubaneswar", "lat": 20.27, "lon": 85.84, "max_hourly_rate_mm": 31.0, "risk": "URBAN_DRAINAGE_FAILURE" }
+  ]
+}

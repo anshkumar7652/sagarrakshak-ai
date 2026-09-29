@@ -1,0 +1,417 @@
+{
+  "type": "FeatureCollection",
+  "name": "Odisha_Coastal_Critical_Infrastructure",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_PURI_001",
+        "name": "District Headquarters Hospital (DHH) Puri",
+        "type": "hospital",
+        "district": "Puri",
+        "subdistrict": "Puri Sadar",
+        "criticality": "CRITICAL",
+        "capacity_beds": 350,
+        "population_served": 185000,
+        "elevation_m": 7.5,
+        "backup_power": true,
+        "access_road_id": "ROAD_NH316_01",
+        "nearest_alternative_id": "HOSP_KHUR_002",
+        "alternative_name": "Capital Hospital, Bhubaneswar",
+        "alternative_dist_km": 56.4,
+        "source": "Health & Family Welfare Dept, Govt of Odisha / OSM",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [85.8286, 19.8135] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_PURI_002",
+        "name": "Community Health Centre (CHC) Konark",
+        "type": "hospital",
+        "district": "Puri",
+        "subdistrict": "Gop / Konark",
+        "criticality": "HIGH",
+        "capacity_beds": 50,
+        "population_served": 62000,
+        "elevation_m": 4.8,
+        "backup_power": false,
+        "access_road_id": "ROAD_MDR_KONARK",
+        "nearest_alternative_id": "HOSP_PURI_003",
+        "alternative_name": "CHC Nimapara",
+        "alternative_dist_km": 24.1,
+        "source": "OSDMA Health Facility Registry / OSM",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.1158, 19.8972] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_PURI_003",
+        "name": "Community Health Centre (CHC) Nimapara",
+        "type": "hospital",
+        "district": "Puri",
+        "subdistrict": "Nimapara",
+        "criticality": "HIGH",
+        "capacity_beds": 60,
+        "population_served": 78000,
+        "elevation_m": 11.2,
+        "backup_power": true,
+        "access_road_id": "ROAD_SH60_NIMA",
+        "nearest_alternative_id": "HOSP_KHUR_001",
+        "alternative_name": "AIIMS Bhubaneswar",
+        "alternative_dist_km": 39.5,
+        "source": "OSDMA Health Facility Registry / OSM",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.0175, 20.0631] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_PURI_004",
+        "name": "Primary Health Centre (PHC) Brahmagiri",
+        "type": "hospital",
+        "district": "Puri",
+        "subdistrict": "Brahmagiri (Near Chilika Lake)",
+        "criticality": "HIGH",
+        "capacity_beds": 30,
+        "population_served": 45000,
+        "elevation_m": 3.2,
+        "backup_power": false,
+        "access_road_id": "ROAD_BRAHMA_COAST",
+        "nearest_alternative_id": "HOSP_PURI_001",
+        "alternative_name": "DHH Puri",
+        "alternative_dist_km": 22.0,
+        "source": "Health & Family Welfare Dept, Govt of Odisha",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [85.6792, 19.8021] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_JAGAT_001",
+        "name": "District Headquarters Hospital Jagatsinghpur",
+        "type": "hospital",
+        "district": "Jagatsinghpur",
+        "subdistrict": "Jagatsinghpur",
+        "criticality": "CRITICAL",
+        "capacity_beds": 200,
+        "population_served": 140000,
+        "elevation_m": 12.0,
+        "backup_power": true,
+        "access_road_id": "ROAD_SH42_JAGAT",
+        "nearest_alternative_id": "HOSP_KHUR_002",
+        "alternative_name": "Capital Hospital, Bhubaneswar",
+        "alternative_dist_km": 42.8,
+        "source": "OSDMA Health Facility Registry",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.1724, 20.2678] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_JAGAT_002",
+        "name": "Paradip Port Trust Hospital",
+        "type": "hospital",
+        "district": "Jagatsinghpur",
+        "subdistrict": "Paradip",
+        "criticality": "CRITICAL",
+        "capacity_beds": 120,
+        "population_served": 85000,
+        "elevation_m": 4.1,
+        "backup_power": true,
+        "access_road_id": "ROAD_NH53_PARADIP",
+        "nearest_alternative_id": "HOSP_JAGAT_001",
+        "alternative_name": "DHH Jagatsinghpur",
+        "alternative_dist_km": 36.2,
+        "source": "Paradip Port Authority / OSM",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.6695, 20.2982] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_KHUR_001",
+        "name": "AIIMS Bhubaneswar (Apex Trauma & Referral)",
+        "type": "hospital",
+        "district": "Khurda",
+        "subdistrict": "Bhubaneswar",
+        "criticality": "APEX_STRATEGIC",
+        "capacity_beds": 960,
+        "population_served": 950000,
+        "elevation_m": 38.0,
+        "backup_power": true,
+        "access_road_id": "ROAD_NH16_BBSR",
+        "nearest_alternative_id": "HOSP_KHUR_002",
+        "alternative_name": "Capital Hospital, Bhubaneswar",
+        "alternative_dist_km": 9.5,
+        "source": "Ministry of Health and Family Welfare / OSM",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [85.7766, 20.2312] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "HOSP_KHUR_002",
+        "name": "Capital Hospital Bhubaneswar",
+        "type": "hospital",
+        "district": "Khurda",
+        "subdistrict": "Bhubaneswar Central",
+        "criticality": "CRITICAL",
+        "capacity_beds": 750,
+        "population_served": 680000,
+        "elevation_m": 42.0,
+        "backup_power": true,
+        "access_road_id": "ROAD_UNIT6_BBSR",
+        "nearest_alternative_id": "HOSP_KHUR_001",
+        "alternative_name": "AIIMS Bhubaneswar",
+        "alternative_dist_km": 9.5,
+        "source": "Health & Family Welfare Dept, Govt of Odisha",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [85.8239, 20.2644] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SHELTER_PURI_001",
+        "name": "Astaranga Multipurpose Cyclone Shelter (MCS)",
+        "type": "shelter",
+        "district": "Puri",
+        "subdistrict": "Astaranga",
+        "criticality": "HIGH",
+        "capacity_persons": 1800,
+        "population_served": 12000,
+        "elevation_m": 3.8,
+        "backup_power": true,
+        "access_road_id": "ROAD_ASTA_COAST",
+        "nearest_alternative_id": "SHELTER_PURI_002",
+        "alternative_name": "Kakatpur High School Cyclone Shelter",
+        "alternative_dist_km": 14.5,
+        "source": "Odisha State Disaster Management Authority (OSDMA)",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.2625, 19.9814] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SHELTER_PURI_002",
+        "name": "Kakatpur MCS Facility",
+        "type": "shelter",
+        "district": "Puri",
+        "subdistrict": "Kakatpur",
+        "criticality": "HIGH",
+        "capacity_persons": 2200,
+        "population_served": 15500,
+        "elevation_m": 8.1,
+        "backup_power": true,
+        "access_road_id": "ROAD_SH60_KAKAT",
+        "nearest_alternative_id": "SHELTER_PURI_003",
+        "alternative_name": "Gop Cyclone Shelter",
+        "alternative_dist_km": 18.2,
+        "source": "OSDMA Registry",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.2081, 20.0272] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SHELTER_PURI_003",
+        "name": "Chandrabhaga Marine Drive Cyclone Shelter",
+        "type": "shelter",
+        "district": "Puri",
+        "subdistrict": "Konark",
+        "criticality": "HIGH",
+        "capacity_persons": 1500,
+        "population_served": 9500,
+        "elevation_m": 4.2,
+        "backup_power": true,
+        "access_road_id": "ROAD_PURI_KONARK_MARINE",
+        "nearest_alternative_id": "HOSP_PURI_002",
+        "alternative_name": "CHC Konark Campus",
+        "alternative_dist_km": 3.8,
+        "source": "OSDMA Registry",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.1362, 19.8789] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SHELTER_PURI_004",
+        "name": "Krushnaprasad Island MCS (Chilika Coastal Strip)",
+        "type": "shelter",
+        "district": "Puri",
+        "subdistrict": "Krushnaprasad",
+        "criticality": "CRITICAL",
+        "capacity_persons": 2500,
+        "population_served": 18000,
+        "elevation_m": 2.1,
+        "backup_power": true,
+        "access_road_id": "ROAD_CHILIKA_STRIP",
+        "nearest_alternative_id": "HOSP_PURI_004",
+        "alternative_name": "PHC Brahmagiri",
+        "alternative_dist_km": 31.0,
+        "source": "OSDMA Registry",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [85.4521, 19.6841] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SHELTER_JAGAT_001",
+        "name": "Ersama Block Multipurpose Cyclone Shelter",
+        "type": "shelter",
+        "district": "Jagatsinghpur",
+        "subdistrict": "Ersama",
+        "criticality": "CRITICAL",
+        "capacity_persons": 3000,
+        "population_served": 22000,
+        "elevation_m": 3.5,
+        "backup_power": true,
+        "access_road_id": "ROAD_ERSAMA_COAST",
+        "nearest_alternative_id": "HOSP_JAGAT_001",
+        "alternative_name": "DHH Jagatsinghpur",
+        "alternative_dist_km": 28.5,
+        "source": "OSDMA Registry (1999 Super Cyclone memorial site)",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.4258, 20.1582] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "GRID_PURI_001",
+        "name": "OPTCL 220/132/33kV Samagara Grid Substation",
+        "type": "power_substation",
+        "district": "Puri",
+        "subdistrict": "Puri Sadar",
+        "criticality": "CRITICAL_GRID_SPINE",
+        "voltage_kv": "220/132/33",
+        "population_served": 240000,
+        "elevation_m": 6.8,
+        "source": "Odisha Power Transmission Corporation Limited (OPTCL)",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [85.8612, 19.8394] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "GRID_JAGAT_001",
+        "name": "OPTCL 220/132kV Paradip Grid Substation",
+        "type": "power_substation",
+        "district": "Jagatsinghpur",
+        "subdistrict": "Paradip",
+        "criticality": "CRITICAL_GRID_SPINE",
+        "voltage_kv": "220/132",
+        "population_served": 190000,
+        "elevation_m": 5.2,
+        "source": "OPTCL / Energy Dept Govt of Odisha",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [86.6341, 20.2855] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "GRID_KHUR_001",
+        "name": "OPTCL 400/220kV Mendhasal Grid Substation",
+        "type": "power_substation",
+        "district": "Khurda",
+        "subdistrict": "Chandaka / Mendhasal",
+        "criticality": "STATE_TRANSMISSION_CORE",
+        "voltage_kv": "400/220",
+        "population_served": 1500000,
+        "elevation_m": 52.0,
+        "source": "OPTCL Grid Map",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": { "type": "Point", "coordinates": [85.7124, 20.2976] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD_NH316_01",
+        "name": "National Highway 316 (Bhubaneswar-Puri Expressway)",
+        "type": "arterial_road",
+        "district": "Puri / Khurda",
+        "criticality": "PRIMARY_LIFELINE",
+        "route_redundancy": "LOW",
+        "elevation_min_m": 5.2,
+        "bridge_crossings": ["Bhargavi River Bridge", "Dhauli Flyover"],
+        "source": "NHAI / OSDMA Evacuation Arteries",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [85.8451, 20.2285],
+          [85.8523, 20.1542],
+          [85.8361, 20.0435],
+          [85.8315, 19.9214],
+          [85.8286, 19.8135]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD_MARINE_01",
+        "name": "Puri-Konark Marine Drive Coastal Highway",
+        "type": "arterial_road",
+        "district": "Puri",
+        "criticality": "HIGH_COASTAL_RISK",
+        "route_redundancy": "NONE",
+        "elevation_min_m": 2.8,
+        "bridge_crossings": ["Balukhand Estuary Bridge", "Kushabhadra River Bridge"],
+        "source": "PWD Govt of Odisha",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [85.8421, 19.8142],
+          [85.9324, 19.8351],
+          [86.0125, 19.8654],
+          [86.1158, 19.8972]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ROAD_NH53_PARADIP",
+        "name": "National Highway 53 (Cuttack-Paradip Port Highway)",
+        "type": "arterial_road",
+        "district": "Jagatsinghpur",
+        "criticality": "PORT_LIFELINE",
+        "route_redundancy": "MODERATE",
+        "elevation_min_m": 4.5,
+        "bridge_crossings": ["Mahanadi South Branch Bridge"],
+        "source": "NHAI",
+        "verification_status": "VERIFIED_OFFICIAL"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [85.9612, 20.4512],
+          [86.1824, 20.3541],
+          [86.4125, 20.3214],
+          [86.6695, 20.2982]
+        ]
+      }
+    }
+  ]
+}
