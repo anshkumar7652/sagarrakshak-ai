@@ -8,8 +8,8 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-black?style=flat&logo=next.js)](https://nextjs.org)
 [![Google Earth Engine](https://img.shields.io/badge/Google%20Earth%20Engine-Planetary%20Data-4285F4?style=flat&logo=google)](https://earthengine.google.com)
 [![Gemini AI](https://img.shields.io/badge/Gemini%20Flash-Grounded%20Reasoning-8E75C2?style=flat&logo=google)](https://ai.google.dev)
+[![Tests Passing](https://img.shields.io/badge/Tests-16%2F16%20Passing-10b981?style=flat)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/Tests-10%2F10%20Passing-10b981?style=flat)]()
 
 ---
 
@@ -124,7 +124,7 @@ docker-compose up --build
 
 ## 🧪 Automated Test Suite
 
-Run all unit tests across the risk engine, hazard bounds, Gemini schemas, and data adapters:
+Run all unit tests across the risk engine, hazard bounds, Gemini schemas, enterprise modules, and data adapters:
 
 ```bash
 pytest -o pythonpath=services/api tests -v
@@ -132,16 +132,40 @@ pytest -o pythonpath=services/api tests -v
 
 Output:
 ```text
-tests/test_adapters.py::test_ibtracs_fani_parsing PASSED          [ 12%]
-tests/test_adapters.py::test_imd_feed_caching PASSED              [ 25%]
-tests/test_gemini_schema.py::test_grounded_advisory_structure PASSED [ 37%]
-tests/test_gemini_schema.py::test_evidence_id_linkage PASSED      [ 50%]
-tests/test_risk_engine.py::test_risk_analysis_output_structure PASSED [ 62%]
-tests/test_risk_engine.py::test_risk_score_bounds PASSED          [ 75%]
-tests/test_risk_engine.py::test_risk_ranking_order PASSED         [ 87%]
-tests/test_risk_engine.py::test_inundation_hazard_sensitivity PASSED [100%]
-============================== 8 passed in 0.25s ==============================
+tests/test_adapters.py::test_ibtracs_fani_parsing PASSED                 [  6%]
+tests/test_adapters.py::test_imd_feed_caching PASSED                     [ 12%]
+tests/test_enterprise_modules.py::test_root_endpoint PASSED              [ 18%]
+tests/test_enterprise_modules.py::test_assets_api PASSED                 [ 25%]
+tests/test_enterprise_modules.py::test_audit_and_verification PASSED     [ 31%]
+tests/test_enterprise_modules.py::test_cap_xml_endpoint PASSED           [ 37%]
+tests/test_enterprise_modules.py::test_multimodal_bulletin_extraction PASSED [ 43%]
+tests/test_enterprise_modules.py::test_cyclone_analytics_comparison PASSED [ 50%]
+tests/test_gemini_schema.py::test_grounded_advisory_structure PASSED     [ 56%]
+tests/test_gemini_schema.py::test_evidence_id_linkage PASSED             [ 62%]
+tests/test_health.py::test_system_health_endpoint PASSED                 [ 68%]
+tests/test_risk_engine.py::test_risk_analysis_output_structure PASSED    [ 75%]
+tests/test_risk_engine.py::test_risk_score_bounds PASSED                 [ 81%]
+tests/test_risk_engine.py::test_risk_ranking_order PASSED                [ 87%]
+tests/test_risk_engine.py::test_inundation_hazard_sensitivity PASSED     [ 93%]
+tests/test_routing.py::test_compute_safe_evacuation_route PASSED         [100%]
+============================== 16 passed in 1.57s ==============================
 ```
+
+---
+
+## 📚 Documentation Index
+
+| Document | Purpose | Link |
+|---|---|---|
+| **Architecture Specification** | High-level system design, data flow, pipeline architecture | [`docs/architecture.md`](file:///docs/architecture.md) |
+| **Model Card** | Gemini 3.7 / 2.5 Flash, evidence grounding, ethical considerations | [`docs/model-card.md`](file:///docs/model-card.md) |
+| **Data Cards** | GEE, NOAA IBTrACS, IMD, OSM, WorldPop dataset specs | [`docs/data-cards.md`](file:///docs/data-cards.md) |
+| **Validation Report** | Cyclone Fani historical validation, ground truth comparison | [`docs/validation.md`](file:///docs/validation.md) |
+| **Responsible AI** | HITL safeguards, anti-panic controls, privacy compliance | [`docs/responsible-ai.md`](file:///docs/responsible-ai.md) |
+| **Judging Evidence** | Direct mapping of rubric criteria to codebase artifacts | [`docs/judging-evidence.md`](file:///docs/judging-evidence.md) |
+| **Pitch Deck Specification** | 11-slide pitch deck structure, problem statement, market | [`docs/pitch-deck.md`](file:///docs/pitch-deck.md) |
+| **Demo Script** | Minute-by-minute walkthrough script for screen recording | [`docs/demo-script.md`](file:///docs/demo-script.md) |
+| **Submission Copy** | Pre-written text fields for Hack2skill submission portal | [`docs/submission.md`](file:///docs/submission.md) |
 
 ---
 
