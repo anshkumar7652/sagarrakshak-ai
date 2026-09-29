@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { AssetRiskAssessment, TrackPoint } from '../types';
-import { Layers, Info } from 'lucide-react';
+import { Layers, Info, Navigation, Compass, MapPin, ZoomIn, Eye } from 'lucide-react';
 
 interface MapProps {
   currentTrackPoint: TrackPoint;
@@ -12,26 +12,34 @@ interface MapProps {
   selectedAsset: AssetRiskAssessment | null;
   onSelectAsset: (asset: AssetRiskAssessment) => void;
   showSafeRoute: boolean;
+  isPlaying?: boolean;
 }
 
 export const MapComponent: React.FC<MapProps> = ({
   currentTrackPoint,
-  allTrackPoints,
-  assets,
+  allTrackPoints = [],
+  assets = [],
   inundationScenario,
   selectedAsset,
   onSelectAsset,
   showSafeRoute,
+  isPlaying = false,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const tileLayerRef = useRef<any>(null);
+  const labelsLayerRef = useRef<any>(null);
+  const initialFittedRef = useRef<boolean>(false);
+
   const layerGroupsRef = useRef<{
     track?: any;
     inundation?: any;
     infrastructure?: any;
     route?: any;
   }>({});
+
+  const [isMapReady, setIsMapReady] = useState(false);
+  const [cameraMode, setCameraMode] = useState<'follow' | 'overview' | 'landfall'>('follow');
 
   const [layersVisible, setLayersVisible] = useState({
     track: true,
@@ -43,10 +51,9 @@ export const MapComponent: React.FC<MapProps> = ({
   const [basemapStyle, setBasemapStyle] = useState<'canvas' | 'satellite' | 'osm'>('canvas');
   const basemapStyleRef = useRef(basemapStyle);
   basemapStyleRef.current = basemapStyle;
-  const labelsLayerRef = useRef<any>(null);
 
   // Helper to load basemap layers
-  const applyBasemap = (style: 'canvas' | 'satellite' | 'osm') => {
+  const applyBasemap = useCallback((style: 'canvas' | 'satellite' | 'osm') => {
     const Leaflet = (window as any).L;
     const map = mapInstanceRef.current;
     if (!Leaflet || !map) return;
@@ -92,7 +99,7 @@ export const MapComponent: React.FC<MapProps> = ({
         maxZoom: 19,
       }).addTo(map);
     }
-  };
+  }, []);
 
   // Initialize Map
   useEffect(() => {
@@ -101,7 +108,6 @@ export const MapComponent: React.FC<MapProps> = ({
 
     const L = (window as any).L;
     if (!L) {
-      // Dynamic load fallback
       const script = document.createElement('script');
       script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       script.async = true;
@@ -117,8 +123,8 @@ export const MapComponent: React.FC<MapProps> = ({
       if (!Leaflet || !mapContainerRef.current) return;
 
       const map = Leaflet.map(mapContainerRef.current, {
-        center: [19.88, 85.95],
-        zoom: 9,
+        center: [17.8, 85.5], // Centered between Bay of Bengal approach and Odisha coast
+        zoom: 7,
         zoomControl: false,
         attributionControl: false,
       });
@@ -135,6 +141,7 @@ export const MapComponent: React.FC<MapProps> = ({
 
       mapInstanceRef.current = map;
       applyBasemap(basemapStyleRef.current);
+      setIsMapReady(true);
     }
 
     // Observer for light/dark theme change
@@ -152,20 +159,68 @@ export const MapComponent: React.FC<MapProps> = ({
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
+      setIsMapReady(false);
     };
-  }, []);
+  }, [applyBasemap]);
+
+  // Initial bounds auto-fit to show entire Bay of Bengal track
+  useEffect(() => {
+    const L = (window as any).L;
+    const map = mapInstanceRef.current;
+    if (!L || !map || !isMapReady || !allTrackPoints || allTrackPoints.length === 0 || initialFittedRef.current) return;
+
+    try {
+      const validPoints = allTrackPoints
+        .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
+        .map((pt) => [pt.lat, pt.lon]);
+
+      if (validPoints.length > 0) {
+        const bounds = L.latLngBounds(validPoints);
+        map.fitBounds(bounds, { padding: [60, 60], maxZoom: 8 });
+        initialFittedRef.current = true;
+      }
+    } catch (e) {
+      console.warn('Initial track fit error:', e);
+    }
+  }, [isMapReady, allTrackPoints]);
+
+  // Smooth Camera Management (Follow Eye, Landfall, Overview)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    const L = (window as any).L;
+    if (!map || !L || !isMapReady) return;
+
+    if (cameraMode === 'follow' && currentTrackPoint && typeof currentTrackPoint.lat === 'number') {
+      map.panTo([currentTrackPoint.lat, currentTrackPoint.lon], { animate: true, duration: 0.6 });
+    } else if (cameraMode === 'landfall') {
+      map.setView([19.85, 85.85], 9, { animate: true, duration: 0.8 });
+    } else if (cameraMode === 'overview' && allTrackPoints && allTrackPoints.length > 0) {
+      const validPoints = allTrackPoints
+        .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
+        .map((pt) => [pt.lat, pt.lon]);
+      if (validPoints.length > 0) {
+        map.fitBounds(L.latLngBounds(validPoints), { padding: [60, 60], maxZoom: 8, animate: true });
+      }
+    }
+  }, [cameraMode, currentTrackPoint, isMapReady, allTrackPoints]);
+
+  // Auto-follow when playing simulation
+  useEffect(() => {
+    if (isPlaying && cameraMode !== 'follow') {
+      setCameraMode('follow');
+    }
+  }, [isPlaying, cameraMode]);
 
   // Update Inundation Layer
   useEffect(() => {
     const L = (window as any).L;
     const map = mapInstanceRef.current;
     const group = layerGroupsRef.current.inundation;
-    if (!L || !map || !group) return;
+    if (!L || !map || !group || !isMapReady) return;
 
     group.clearLayers();
     if (!layersVisible.inundation) return;
 
-    // Surge polygons for Coastal Puri & Jagatsinghpur
     const surgeConfigs = {
       low: {
         coords: [
@@ -214,99 +269,217 @@ export const MapComponent: React.FC<MapProps> = ({
         })
         .addTo(group);
     });
-  }, [inundationScenario, layersVisible.inundation]);
+  }, [inundationScenario, layersVisible.inundation, isMapReady]);
 
-  // Update Cyclone Track & Cone Layer
+  // Update Cyclone Track, Path & Active Eye Layer
   useEffect(() => {
     const L = (window as any).L;
     const map = mapInstanceRef.current;
     const group = layerGroupsRef.current?.track;
-    if (!L || !map || !group || !allTrackPoints || allTrackPoints.length === 0) return;
+    if (!L || !map || !group || !isMapReady || !allTrackPoints || allTrackPoints.length === 0) return;
 
     try {
       group.clearLayers();
       if (!layersVisible.track) return;
 
-      // Track Polyline
-      const latLngs = allTrackPoints
-        .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
-        .map((pt) => [pt.lat, pt.lon]);
+      const validPoints = allTrackPoints.filter(
+        (pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number'
+      );
+      if (validPoints.length === 0) return;
 
-      if (latLngs.length > 0) {
-        L.polyline(latLngs, {
-          color: '#38bdf8',
-          weight: 3,
-          opacity: 0.8,
-          dashArray: '6, 6',
+      const activePoint = currentTrackPoint || validPoints[0];
+      const activeIdx = validPoints.findIndex((pt) => pt.timestamp === activePoint.timestamp);
+      const safeActiveIdx = activeIdx >= 0 ? activeIdx : 0;
+
+      // 1. FULL BACKGROUND CORRIDOR GLOW LINE (Always shows full trajectory)
+      const allLatLngs = validPoints.map((pt) => [pt.lat, pt.lon]);
+      L.polyline(allLatLngs, {
+        color: 'rgba(56, 189, 248, 0.25)',
+        weight: 8,
+        opacity: 0.6,
+        lineCap: 'round',
+        lineJoin: 'round',
+      }).addTo(group);
+
+      // 2. OBSERVED / TRAVELED PATH (From genesis up to active index)
+      const pastPoints = validPoints.slice(0, safeActiveIdx + 1);
+      if (pastPoints.length >= 2) {
+        const pastLatLngs = pastPoints.map((pt) => [pt.lat, pt.lon]);
+        L.polyline(pastLatLngs, {
+          color: '#f59e0b',
+          weight: 4.5,
+          opacity: 0.95,
+          lineCap: 'round',
         }).addTo(group);
       }
 
-      const activePoint = currentTrackPoint || allTrackPoints[0];
+      // 3. PROJECTED / FORECAST PATH (From active index to end of track)
+      const futurePoints = validPoints.slice(safeActiveIdx);
+      if (futurePoints.length >= 2) {
+        const futureLatLngs = futurePoints.map((pt) => [pt.lat, pt.lon]);
+        L.polyline(futureLatLngs, {
+          color: '#00f0ff',
+          weight: 3.5,
+          opacity: 0.9,
+          dashArray: '8, 8',
+          lineCap: 'round',
+        }).addTo(group);
+      }
 
-      // Track Points (Circles)
-      allTrackPoints.forEach((pt) => {
-        if (!pt || typeof pt.lat !== 'number' || typeof pt.lon !== 'number') return;
+      // 4. MILESTONE CHECKPOINTS (All Track Points)
+      validPoints.forEach((pt, idx) => {
+        const isPast = idx < safeActiveIdx;
+        const isCurrent = idx === safeActiveIdx;
+        const isLandfall = pt.stage?.toLowerCase().includes('landfall') || (pt.lat === 19.8 && pt.lon === 85.85);
 
-        const isPast = activePoint?.timestamp ? new Date(pt.timestamp) <= new Date(activePoint.timestamp) : true;
-        const isCurrent = activePoint?.timestamp ? pt.timestamp === activePoint.timestamp : false;
+        if (isCurrent) return; // Drawn separately with rich radar eye
 
-        let radius = 5;
-        let color = '#38bdf8';
-        let fillOpacity = 0.5;
-
-        if (isCurrent) {
-          radius = 9;
-          color = '#ef4444';
-          fillOpacity = 1;
-        } else if (isPast) {
-          radius = 4;
-          color = '#64748b';
-          fillOpacity = 0.4;
-        }
+        const radius = isLandfall ? 8 : (isPast ? 4.5 : 5);
+        const color = isLandfall ? '#ef4444' : (isPast ? '#f59e0b' : '#38bdf8');
+        const fillOpacity = isPast ? 0.7 : 0.4;
 
         const circle = L.circleMarker([pt.lat, pt.lon], {
           radius,
           color,
           fillColor: color,
           fillOpacity,
-          weight: isCurrent ? 3 : 1,
+          weight: isLandfall ? 3 : 1.5,
         });
 
         circle.bindTooltip(`
-          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px;">
-            <strong>${pt.stage || 'Track Stage'}</strong><br/>
-            Winds: ${pt.wind_kmh || 0} km/h • Pressure: ${pt.pressure_hpa || 0} hPa<br/>
-            ${pt.timestamp ? new Date(pt.timestamp).toUTCString() : ''}
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; padding: 2px;">
+            <strong style="color: ${color};">${pt.stage || 'Track Waypoint'}</strong><br/>
+            Winds: <b>${pt.wind_kmh || 0} km/h</b> • Pressure: <b>${pt.pressure_hpa || 0} hPa</b><br/>
+            ${pt.category || ''}<br/>
+            <span style="color: #94a3b8; font-size: 10px;">${pt.timestamp ? new Date(pt.timestamp).toUTCString().slice(0, 22) : ''}</span>
           </div>
         `, { sticky: true });
 
         circle.addTo(group);
+
+        // Landfall beacon flag
+        if (isLandfall) {
+          const landfallIcon = L.divIcon({
+            html: `
+              <div style="
+                background: #ef4444;
+                color: #ffffff;
+                font-size: 9px;
+                font-weight: 800;
+                padding: 2px 6px;
+                border-radius: 4px;
+                box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+                white-space: nowrap;
+                letter-spacing: 0.5px;
+                transform: translate(-50%, -24px);
+              ">
+                🎯 LANDFALL (PURI)
+              </div>
+            `,
+            className: '',
+            iconSize: [0, 0],
+          });
+          L.marker([pt.lat, pt.lon], { icon: landfallIcon }).addTo(group);
+        }
       });
 
-      // Uncertainty Cone around Current Point
+      // 5. UNCERTAINTY CONE AROUND ACTIVE EYE
       if (activePoint && typeof activePoint.lat === 'number' && typeof activePoint.lon === 'number') {
+        const coneRadius = (activePoint.cone_radius_km || 50) * 1000;
         L.circle([activePoint.lat, activePoint.lon], {
-          radius: (activePoint.cone_radius_km || 65) * 1000,
-          color: '#f59e0b',
-          weight: 1,
-          dashArray: '3, 6',
-          fillColor: '#f59e0b',
-          fillOpacity: 0.12,
+          radius: coneRadius,
+          color: '#ef4444',
+          weight: 1.5,
+          dashArray: '4, 6',
+          fillColor: '#ef4444',
+          fillOpacity: 0.08,
         })
-          .bindTooltip('Cone of Track Uncertainty (IMD/JTWC)', { sticky: true })
+          .bindTooltip(`<b>IMD/JTWC Uncertainty Cone</b><br/>Radius: ${activePoint.cone_radius_km || 50} km`, { sticky: true })
           .addTo(group);
+
+        // 6. ACTIVE CYCLONE EYE (Animated Radar Marker)
+        const eyeMarkerHtml = `
+          <div class="cyclone-eye-marker" style="width: 54px; height: 54px;">
+            <div class="cyclone-radar-ring"></div>
+            <div class="cyclone-radar-ring-2"></div>
+            <div style="
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              background: #0f172a;
+              border: 2.5px solid #ef4444;
+              box-shadow: 0 0 20px rgba(239, 68, 68, 0.8), inset 0 0 8px rgba(239, 68, 68, 0.5);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              z-index: 2;
+            ">
+              <span class="cyclone-spinner" style="font-size: 16px;">🌀</span>
+            </div>
+            <div style="
+              position: absolute;
+              bottom: -22px;
+              left: 50%;
+              transform: translateX(-50%);
+              background: rgba(15, 23, 42, 0.92);
+              border: 1px solid rgba(239, 68, 68, 0.6);
+              color: #f8fafc;
+              padding: 2px 8px;
+              border-radius: 9999px;
+              font-size: 10px;
+              font-weight: 800;
+              white-space: nowrap;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+              letter-spacing: 0.5px;
+              display: flex;
+              align-items: center;
+              gap: 4px;
+            ">
+              <span style="color: #ef4444;">●</span>
+              <span>${activePoint.wind_kmh || 0} km/h</span>
+            </div>
+          </div>
+        `;
+
+        const eyeIcon = L.divIcon({
+          html: eyeMarkerHtml,
+          className: '',
+          iconSize: [54, 54],
+          iconAnchor: [27, 27],
+        });
+
+        const eyeMarker = L.marker([activePoint.lat, activePoint.lon], { icon: eyeIcon, zIndexOffset: 1000 });
+
+        eyeMarker.bindTooltip(`
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 180px; padding: 4px;">
+            <div style="font-size: 11px; font-weight: 800; color: #ef4444; text-transform: uppercase;">
+              🌀 ${activePoint.category || 'Extremely Severe Cyclonic Storm'}
+            </div>
+            <div style="font-size: 13px; font-weight: 800; color: var(--text-primary); margin: 3px 0;">
+              ${activePoint.stage || 'Live Simulation Position'}
+            </div>
+            <div style="font-size: 11px; color: var(--text-secondary);">
+              Winds: <b style="color: #38bdf8;">${activePoint.wind_kmh || 0} km/h</b><br/>
+              Central Pressure: <b>${activePoint.pressure_hpa || 0} hPa</b><br/>
+              Uncertainty Swath: <b>${activePoint.cone_radius_km || 50} km</b><br/>
+              Timestamp: <b>${activePoint.timestamp ? new Date(activePoint.timestamp).toUTCString().slice(0, 22) : 'Active'}</b>
+            </div>
+          </div>
+        `, { sticky: true });
+
+        eyeMarker.addTo(group);
       }
     } catch (err) {
       console.warn('Track layer render error handled:', err);
     }
-  }, [currentTrackPoint, allTrackPoints, layersVisible.track]);
+  }, [currentTrackPoint, allTrackPoints, layersVisible.track, isMapReady]);
 
   // Update Infrastructure Assets Layer
   useEffect(() => {
     const L = (window as any).L;
     const map = mapInstanceRef.current;
     const group = layerGroupsRef.current?.infrastructure;
-    if (!L || !map || !group || !assets) return;
+    if (!L || !map || !group || !isMapReady || !assets) return;
 
     try {
       group.clearLayers();
@@ -407,19 +580,18 @@ export const MapComponent: React.FC<MapProps> = ({
     } catch (err) {
       console.warn('Assets layer render error handled:', err);
     }
-  }, [assets, selectedAsset, layersVisible.infrastructure]);
+  }, [assets, selectedAsset, layersVisible.infrastructure, onSelectAsset, isMapReady]);
 
   // Update Safe Evacuation Route Layer
   useEffect(() => {
     const L = (window as any).L;
     const map = mapInstanceRef.current;
     const group = layerGroupsRef.current.route;
-    if (!L || !map || !group) return;
+    if (!L || !map || !group || !isMapReady) return;
 
     group.clearLayers();
     if (!showSafeRoute || !layersVisible.route) return;
 
-    // High embankment corridor coordinates: Puri Beach DHH -> NH-316 -> Pipili High Ground
     const routeCoords = [
       [19.799, 85.825],
       [19.815, 85.832],
@@ -440,14 +612,14 @@ export const MapComponent: React.FC<MapProps> = ({
         sticky: true,
       })
       .addTo(group);
-  }, [showSafeRoute, layersVisible.route]);
+  }, [showSafeRoute, layersVisible.route, isMapReady]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Map Container */}
+      {/* Map DOM Container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
 
-      {/* Floating Layer Controls Toolbar */}
+      {/* Floating Layer Controls Toolbar (Top Left) */}
       <div
         className="glass-panel"
         style={{
@@ -459,11 +631,13 @@ export const MapComponent: React.FC<MapProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
+          flexWrap: 'wrap',
+          maxWidth: 'calc(100% - 240px)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: '6px' }}>
-          <Layers size={15} color="var(--accent-primary)" />
-          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: '4px' }}>
+          <Layers size={14} color="var(--accent-primary)" />
+          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
             LAYERS:
           </span>
         </div>
@@ -483,8 +657,8 @@ export const MapComponent: React.FC<MapProps> = ({
               }
               className={isAct ? 'btn-outline-cyan' : 'btn-secondary'}
               style={{
-                padding: '4px 10px',
-                fontSize: '0.74rem',
+                padding: '4px 9px',
+                fontSize: '0.72rem',
                 gap: '5px',
                 background: isAct ? 'var(--bg-badge)' : undefined,
               }}
@@ -495,18 +669,18 @@ export const MapComponent: React.FC<MapProps> = ({
           );
         })}
 
-        <div style={{ width: '1px', height: '18px', background: 'var(--border-subtle, rgba(255,255,255,0.15))', margin: '0 4px' }} />
+        <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle, rgba(255,255,255,0.15))', margin: '0 4px' }} />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: '4px' }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
+          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
             BASEMAP:
           </span>
         </div>
 
         {[
-          { key: 'canvas', label: 'Tactical Canvas', icon: '🗺️' },
+          { key: 'canvas', label: 'Tactical', icon: '🗺️' },
           { key: 'satellite', label: 'Satellite', icon: '🛰️' },
-          { key: 'osm', label: 'Street Map', icon: '🌐' },
+          { key: 'osm', label: 'Streets', icon: '🌐' },
         ].map((item) => {
           const isAct = basemapStyle === item.key;
           return (
@@ -518,8 +692,8 @@ export const MapComponent: React.FC<MapProps> = ({
               }}
               className={isAct ? 'btn-outline-cyan' : 'btn-secondary'}
               style={{
-                padding: '4px 10px',
-                fontSize: '0.74rem',
+                padding: '4px 9px',
+                fontSize: '0.72rem',
                 gap: '5px',
                 background: isAct ? 'var(--bg-badge)' : undefined,
               }}
@@ -531,7 +705,74 @@ export const MapComponent: React.FC<MapProps> = ({
         })}
       </div>
 
-      {/* Floating Map Legend */}
+      {/* Floating Camera Preset Controller (Top Right) */}
+      <div
+        className="glass-panel"
+        style={{
+          position: 'absolute',
+          top: '16px',
+          right: '16px',
+          zIndex: 500,
+          padding: '6px 10px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginRight: '4px' }}>
+          <Compass size={14} color="var(--accent-primary)" />
+          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
+            CAMERA:
+          </span>
+        </div>
+
+        <button
+          onClick={() => setCameraMode('follow')}
+          className={cameraMode === 'follow' ? 'btn-outline-cyan' : 'btn-secondary'}
+          style={{
+            padding: '4px 8px',
+            fontSize: '0.72rem',
+            gap: '4px',
+            background: cameraMode === 'follow' ? 'var(--bg-badge)' : undefined,
+          }}
+          title="Keep active storm eye centered during simulation playback"
+        >
+          <Eye size={12} color={cameraMode === 'follow' ? '#38bdf8' : undefined} />
+          <span>Follow Eye</span>
+        </button>
+
+        <button
+          onClick={() => setCameraMode('overview')}
+          className={cameraMode === 'overview' ? 'btn-outline-cyan' : 'btn-secondary'}
+          style={{
+            padding: '4px 8px',
+            fontSize: '0.72rem',
+            gap: '4px',
+            background: cameraMode === 'overview' ? 'var(--bg-badge)' : undefined,
+          }}
+          title="Fit complete 900km Bay of Bengal trajectory"
+        >
+          <Navigation size={12} />
+          <span>All Track</span>
+        </button>
+
+        <button
+          onClick={() => setCameraMode('landfall')}
+          className={cameraMode === 'landfall' ? 'btn-outline-cyan' : 'btn-secondary'}
+          style={{
+            padding: '4px 8px',
+            fontSize: '0.72rem',
+            gap: '4px',
+            background: cameraMode === 'landfall' ? 'var(--bg-badge)' : undefined,
+          }}
+          title="Focus on Puri Coastline & Critical Infrastructure"
+        >
+          <MapPin size={12} />
+          <span>Puri Coast</span>
+        </button>
+      </div>
+
+      {/* Floating Tactical Legend (Bottom Left) */}
       <div
         className="glass-panel"
         style={{
@@ -541,22 +782,26 @@ export const MapComponent: React.FC<MapProps> = ({
           zIndex: 500,
           padding: '12px 16px',
           fontSize: '0.74rem',
-          maxWidth: '280px',
+          maxWidth: '290px',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
           <Info size={14} color="var(--accent-primary)" />
-          <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Outfit', sans-serif" }}>Hazard & Risk Key</span>
+          <span style={{ fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Outfit', sans-serif" }}>Tactical Path & Risk Key</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-red)' }} />
-            <span style={{ color: 'var(--text-secondary)' }}>Critical Risk Facility (&gt;80%)</span>
+            <span style={{ width: '16px', height: '4px', background: '#f59e0b', borderRadius: '2px' }} />
+            <span style={{ color: 'var(--text-secondary)' }}>Observed Track (Traveled)</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-amber)' }} />
-            <span style={{ color: 'var(--text-secondary)' }}>High Risk Facility (65-80%)</span>
+            <span style={{ width: '16px', height: '0px', borderTop: '2.5px dashed #00f0ff' }} />
+            <span style={{ color: 'var(--text-secondary)' }}>Projected Forecast (IMD/JTWC)</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', border: '1px solid #ffffff' }} />
+            <span style={{ color: 'var(--text-secondary)' }}>Critical Risk Facility (&gt;80%)</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ width: '16px', height: '8px', background: 'var(--bg-badge)', border: '1px dashed var(--accent-cyan)' }} />
@@ -564,7 +809,7 @@ export const MapComponent: React.FC<MapProps> = ({
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ width: '16px', height: '4px', background: 'var(--accent-emerald)', borderRadius: '2px' }} />
-            <span style={{ color: 'var(--text-secondary)' }}>Safe Evacuation Corridor</span>
+            <span style={{ color: 'var(--text-secondary)' }}>Safe Evacuation Corridor (NH-316)</span>
           </div>
         </div>
       </div>

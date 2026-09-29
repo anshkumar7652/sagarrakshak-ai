@@ -364,6 +364,51 @@ a {
   border: 1px solid var(--border-glow);
 }
 
+/* Leaflet Cyclone Eye Animations */
+@keyframes cyclone-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes radar-pulse {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0.3; }
+  100% { transform: scale(2.3); opacity: 0; }
+}
+
+.cyclone-eye-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cyclone-radar-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #ef4444;
+  animation: radar-pulse 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+.cyclone-radar-ring-2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1.5px solid #f59e0b;
+  animation: radar-pulse 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  animation-delay: 0.75s;
+  pointer-events: none;
+}
+
+.cyclone-spinner {
+  animation: cyclone-spin 4s linear infinite;
+  display: inline-block;
+}
+
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -373,3 +418,4 @@ a {
     scroll-behavior: auto !important;
   }
 }
+
