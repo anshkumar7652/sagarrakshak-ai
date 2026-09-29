@@ -627,15 +627,13 @@ export const MapComponent: React.FC<MapProps> = ({
           top: '16px',
           left: '16px',
           zIndex: 500,
-          padding: '8px 12px',
+          padding: '6px 12px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          flexWrap: 'wrap',
-          maxWidth: 'calc(100% - 240px)',
+          gap: '6px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginRight: '2px' }}>
           <Layers size={14} color="var(--accent-primary)" />
           <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
             LAYERS:
@@ -668,44 +666,9 @@ export const MapComponent: React.FC<MapProps> = ({
             </button>
           );
         })}
-
-        <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle, rgba(255,255,255,0.15))', margin: '0 4px' }} />
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: '4px' }}>
-          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
-            BASEMAP:
-          </span>
-        </div>
-
-        {[
-          { key: 'canvas', label: 'Tactical', icon: '🗺️' },
-          { key: 'satellite', label: 'Satellite', icon: '🛰️' },
-          { key: 'osm', label: 'Streets', icon: '🌐' },
-        ].map((item) => {
-          const isAct = basemapStyle === item.key;
-          return (
-            <button
-              key={item.key}
-              onClick={() => {
-                setBasemapStyle(item.key as any);
-                applyBasemap(item.key as any);
-              }}
-              className={isAct ? 'btn-outline-cyan' : 'btn-secondary'}
-              style={{
-                padding: '4px 9px',
-                fontSize: '0.72rem',
-                gap: '5px',
-                background: isAct ? 'var(--bg-badge)' : undefined,
-              }}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
       </div>
 
-      {/* Floating Camera Preset Controller (Top Right) */}
+      {/* Floating Basemap & Camera Preset Toolbar (Top Right) */}
       <div
         className="glass-panel"
         style={{
@@ -713,63 +676,99 @@ export const MapComponent: React.FC<MapProps> = ({
           top: '16px',
           right: '16px',
           zIndex: 500,
-          padding: '6px 10px',
+          padding: '6px 12px',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '8px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginRight: '4px' }}>
-          <Compass size={14} color="var(--accent-primary)" />
+        {/* Basemap Switcher */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
+            BASEMAP:
+          </span>
+          {[
+            { key: 'canvas', label: 'Tactical', icon: '🗺️' },
+            { key: 'satellite', label: 'Satellite', icon: '🛰️' },
+            { key: 'osm', label: 'Streets', icon: '🌐' },
+          ].map((item) => {
+            const isAct = basemapStyle === item.key;
+            return (
+              <button
+                key={item.key}
+                onClick={() => {
+                  setBasemapStyle(item.key as any);
+                  applyBasemap(item.key as any);
+                }}
+                className={isAct ? 'btn-outline-cyan' : 'btn-secondary'}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '0.72rem',
+                  gap: '4px',
+                  background: isAct ? 'var(--bg-badge)' : undefined,
+                }}
+              >
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle, rgba(255,255,255,0.15))', margin: '0 2px' }} />
+
+        {/* Camera Presets */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <Compass size={13} color="var(--accent-primary)" />
           <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
             CAMERA:
           </span>
+
+          <button
+            onClick={() => setCameraMode('follow')}
+            className={cameraMode === 'follow' ? 'btn-outline-cyan' : 'btn-secondary'}
+            style={{
+              padding: '4px 8px',
+              fontSize: '0.72rem',
+              gap: '4px',
+              background: cameraMode === 'follow' ? 'var(--bg-badge)' : undefined,
+            }}
+            title="Keep active storm eye centered during simulation playback"
+          >
+            <Eye size={12} color={cameraMode === 'follow' ? '#38bdf8' : undefined} />
+            <span>Follow</span>
+          </button>
+
+          <button
+            onClick={() => setCameraMode('overview')}
+            className={cameraMode === 'overview' ? 'btn-outline-cyan' : 'btn-secondary'}
+            style={{
+              padding: '4px 8px',
+              fontSize: '0.72rem',
+              gap: '4px',
+              background: cameraMode === 'overview' ? 'var(--bg-badge)' : undefined,
+            }}
+            title="Fit complete 900km Bay of Bengal trajectory"
+          >
+            <Navigation size={12} />
+            <span>Overview</span>
+          </button>
+
+          <button
+            onClick={() => setCameraMode('landfall')}
+            className={cameraMode === 'landfall' ? 'btn-outline-cyan' : 'btn-secondary'}
+            style={{
+              padding: '4px 8px',
+              fontSize: '0.72rem',
+              gap: '4px',
+              background: cameraMode === 'landfall' ? 'var(--bg-badge)' : undefined,
+            }}
+            title="Focus on Puri Coastline & Critical Infrastructure"
+          >
+            <MapPin size={12} />
+            <span>Landfall</span>
+          </button>
         </div>
-
-        <button
-          onClick={() => setCameraMode('follow')}
-          className={cameraMode === 'follow' ? 'btn-outline-cyan' : 'btn-secondary'}
-          style={{
-            padding: '4px 8px',
-            fontSize: '0.72rem',
-            gap: '4px',
-            background: cameraMode === 'follow' ? 'var(--bg-badge)' : undefined,
-          }}
-          title="Keep active storm eye centered during simulation playback"
-        >
-          <Eye size={12} color={cameraMode === 'follow' ? '#38bdf8' : undefined} />
-          <span>Follow Eye</span>
-        </button>
-
-        <button
-          onClick={() => setCameraMode('overview')}
-          className={cameraMode === 'overview' ? 'btn-outline-cyan' : 'btn-secondary'}
-          style={{
-            padding: '4px 8px',
-            fontSize: '0.72rem',
-            gap: '4px',
-            background: cameraMode === 'overview' ? 'var(--bg-badge)' : undefined,
-          }}
-          title="Fit complete 900km Bay of Bengal trajectory"
-        >
-          <Navigation size={12} />
-          <span>All Track</span>
-        </button>
-
-        <button
-          onClick={() => setCameraMode('landfall')}
-          className={cameraMode === 'landfall' ? 'btn-outline-cyan' : 'btn-secondary'}
-          style={{
-            padding: '4px 8px',
-            fontSize: '0.72rem',
-            gap: '4px',
-            background: cameraMode === 'landfall' ? 'var(--bg-badge)' : undefined,
-          }}
-          title="Focus on Puri Coastline & Critical Infrastructure"
-        >
-          <MapPin size={12} />
-          <span>Puri Coast</span>
-        </button>
       </div>
 
       {/* Floating Tactical Legend (Bottom Left) */}
