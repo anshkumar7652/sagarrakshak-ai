@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function ProcessSteps() {
   const steps = [
@@ -81,8 +82,14 @@ export function ProcessSteps() {
           }}
         >
           {steps.map((step, idx) => (
-            <div
+            <ScrollReveal
               key={idx}
+              variant="slide-up-spring"
+              delay={idx * 150}
+              duration={650}
+              threshold={0.1}
+            >
+            <div
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -126,6 +133,7 @@ export function ProcessSteps() {
                 {step.description}
               </p>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

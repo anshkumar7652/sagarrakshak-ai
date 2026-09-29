@@ -11,6 +11,7 @@ import { DifferentiatorsSection } from '../components/landing/DifferentiatorsSec
 import { TestimonialsSection } from '../components/landing/TestimonialsSection';
 import { CTABanner } from '../components/landing/CTABanner';
 import { Footer } from '../components/landing/Footer';
+import { ScrollReveal } from '../components/landing/ScrollReveal';
 
 export default function LandingPage() {
   return (
@@ -19,31 +20,49 @@ export default function LandingPage() {
       <LandingNav />
 
       {/* 2. High-Impact Hero with Tactical Preview & Live Telemetry Card */}
-      <HeroSection />
+      <ScrollReveal variant="blur-in" duration={900} threshold={0.1}>
+        <HeroSection />
+      </ScrollReveal>
 
       {/* 3. Authoritative Metric / Stats Counter Row */}
-      <StatsBar />
+      <ScrollReveal variant="fade-up" duration={650} threshold={0.2}>
+        <StatsBar />
+      </ScrollReveal>
 
       {/* 4. 6 Core Operational Services & Capabilities Grid */}
-      <FeaturesGrid />
+      <ScrollReveal variant="fade-up" duration={750} threshold={0.1}>
+        <FeaturesGrid />
+      </ScrollReveal>
 
       {/* 5. 4-Stage Rapid Execution Pipeline */}
-      <ProcessSteps />
+      <ScrollReveal variant="slide-up-spring" duration={800} threshold={0.15}>
+        <ProcessSteps />
+      </ScrollReveal>
 
       {/* 6. Regional Coastal Coverage & Readiness Guarantee */}
-      <CoverageSection />
+      <ScrollReveal variant="fade-left" duration={750} threshold={0.12}>
+        <CoverageSection />
+      </ScrollReveal>
 
       {/* 7. Technical Differentiators & Live Action Brief Sample */}
-      <DifferentiatorsSection />
+      <ScrollReveal variant="zoom-in" duration={700} threshold={0.12}>
+        <DifferentiatorsSection />
+      </ScrollReveal>
 
       {/* 8. Emergency Commander Endorsements & Social Proof */}
-      <TestimonialsSection />
+      <ScrollReveal variant="fade-up" duration={700} delay={100} threshold={0.15}>
+        <TestimonialsSection />
+      </ScrollReveal>
 
       {/* 9. High-Contrast Conversion CTA Block */}
-      <CTABanner />
+      <ScrollReveal variant="scale-rotate" duration={750} threshold={0.2}>
+        <CTABanner />
+      </ScrollReveal>
 
       {/* 10. Comprehensive Multi-Column Footer */}
-      <Footer />
+      <ScrollReveal variant="fade-up" duration={600} threshold={0.1}>
+        <Footer />
+      </ScrollReveal>
     </div>
   );
 }

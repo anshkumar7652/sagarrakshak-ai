@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   ArrowRight
 } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function FeaturesGrid() {
   const features = [
@@ -107,8 +108,14 @@ export function FeaturesGrid() {
           }}
         >
           {features.map((item, idx) => (
-            <div
+            <ScrollReveal
               key={idx}
+              variant="fade-up"
+              delay={idx * 100}
+              duration={600}
+              threshold={0.1}
+            >
+            <div
               className="interactive-card"
               style={{
                 display: 'flex',
@@ -199,6 +206,7 @@ export function FeaturesGrid() {
                 </Link>
               </div>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

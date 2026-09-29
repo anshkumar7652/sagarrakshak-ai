@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Star } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function TestimonialsSection() {
   const testimonials = [
@@ -70,8 +71,14 @@ export function TestimonialsSection() {
           }}
         >
           {testimonials.map((t, idx) => (
-            <div
+            <ScrollReveal
               key={idx}
+              variant="fade-up"
+              delay={idx * 130}
+              duration={650}
+              threshold={0.12}
+            >
+            <div
               className="interactive-card"
               style={{
                 display: 'flex',
@@ -118,6 +125,7 @@ export function TestimonialsSection() {
                 </div>
               </div>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
