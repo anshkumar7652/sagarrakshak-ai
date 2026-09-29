@@ -19,6 +19,22 @@
 
 ---
 
+### 🖥️ Platform Showcase
+
+<div align="center">
+  <img src="docs/assets/dashboard_live.png" alt="SagarRakshak AI Operational Command Dashboard" width="100%" />
+  <p><em><b>Operational Command Dashboard:</b> Live Cyclone Fani landfall tracking over Odisha, 1.37M exposed citizens screened via WorldPop 100m grids, and facility-level risk rankings.</em></p>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="docs/assets/landing_page.png" alt="SagarRakshak AI Landing Page" width="100%" />
+  <p><em><b>Public Decision-Support Portal:</b> Sub-meter coastal risk screening, GEE planetary data fusion, and zero-hallucination Gemini advisory generation.</em></p>
+</div>
+
+---
+
 ## 📌 Executive Summary
 
 Current disaster systems inform authorities **where a cyclone will go**, but leave a critical gap in answering **what local infrastructure will fail, which populations are cut off, and what actions must be taken first**.
