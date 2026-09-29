@@ -1,8 +1,10 @@
-# 🌊 SagarRakshak AI
-### *“From cyclone track to local action in minutes.”*
-
-> **Track 5: AI-Powered Predictive Risk & Vulnerability Platform**  
-> *Build with AI: Code for Communities 2.0 (Google Developers Group / Hack2skill)*
+<div align="center">
+  <img src="docs/assets/team_logo.png" alt="SagarRakshak AI Logo" width="150" style="border-radius: 24px;" />
+  <h1>🌊 SagarRakshak AI (सागररक्षक)</h1>
+  <p><strong><em>“From cyclone track to local infrastructure action in minutes.”</em></strong></p>
+  <p><strong>Track 5: AI-Powered Predictive Risk & Vulnerability Platform</strong><br/>
+  <em>Build with AI: Code for Communities 2.0 (Google Developers Group / Hack2skill)</em></p>
+</div>
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-black?style=flat&logo=next.js)](https://nextjs.org)
