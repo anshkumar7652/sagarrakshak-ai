@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { AssetRiskAssessment, TrackPoint } from '../types';
-import { Layers, Info, Navigation, Compass, MapPin, ZoomIn, Eye } from 'lucide-react';
+import { Layers, Info, Navigation, Compass, MapPin, Eye } from 'lucide-react';
 
 interface MapProps {
   currentTrackPoint: TrackPoint;
@@ -26,6 +26,7 @@ export const MapComponent: React.FC<MapProps> = ({
   isPlaying = false,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const tileLayerRef = useRef<any>(null);
   const labelsLayerRef = useRef<any>(null);
@@ -123,7 +124,7 @@ export const MapComponent: React.FC<MapProps> = ({
       if (!Leaflet || !mapContainerRef.current) return;
 
       const map = Leaflet.map(mapContainerRef.current, {
-        center: [17.8, 85.5], // Centered between Bay of Bengal approach and Odisha coast
+        center: [17.8, 85.5],
         zoom: 7,
         zoomControl: false,
         attributionControl: false,
@@ -163,6 +164,17 @@ export const MapComponent: React.FC<MapProps> = ({
     };
   }, [applyBasemap]);
 
+  // Disable Leaflet click propagation on toolbar so clicks always hit React buttons
+  useEffect(() => {
+    const L = (window as any).L;
+    if (L && toolbarRef.current) {
+      try {
+        L.DomEvent.disableClickPropagation(toolbarRef.current);
+        L.DomEvent.disableScrollPropagation(toolbarRef.current);
+      } catch (_) {}
+    }
+  }, [isMapReady]);
+
   // Initial bounds auto-fit to show entire Bay of Bengal track
   useEffect(() => {
     const L = (window as any).L;
@@ -184,32 +196,44 @@ export const MapComponent: React.FC<MapProps> = ({
     }
   }, [isMapReady, allTrackPoints]);
 
-  // Smooth Camera Management (Follow Eye, Landfall, Overview)
+  // Direct, immediate camera action handler
+  const handleCameraChange = (mode: 'follow' | 'overview' | 'landfall') => {
+    setCameraMode(mode);
+    const map = mapInstanceRef.current;
+    const Leaflet = (window as any).L;
+    if (!map) return;
+
+    try {
+      if (mode === 'follow') {
+        if (currentTrackPoint && typeof currentTrackPoint.lat === 'number') {
+          map.setView([currentTrackPoint.lat, currentTrackPoint.lon], Math.max(map.getZoom(), 8), { animate: true });
+        }
+      } else if (mode === 'overview') {
+        if (Leaflet && allTrackPoints && allTrackPoints.length > 0) {
+          const validPoints = allTrackPoints
+            .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
+            .map((pt) => [pt.lat, pt.lon]);
+          if (validPoints.length > 0) {
+            map.fitBounds(Leaflet.latLngBounds(validPoints), { padding: [60, 60], maxZoom: 8, animate: true });
+          }
+        }
+      } else if (mode === 'landfall') {
+        map.setView([19.85, 85.85], 9, { animate: true });
+      }
+    } catch (err) {
+      console.warn('Camera pan error:', err);
+    }
+  };
+
+  // Follow active eye when simulation steps advance (only if follow mode is active)
   useEffect(() => {
     const map = mapInstanceRef.current;
-    const L = (window as any).L;
-    if (!map || !L || !isMapReady) return;
+    if (!map || !isMapReady) return;
 
     if (cameraMode === 'follow' && currentTrackPoint && typeof currentTrackPoint.lat === 'number') {
-      map.panTo([currentTrackPoint.lat, currentTrackPoint.lon], { animate: true, duration: 0.6 });
-    } else if (cameraMode === 'landfall') {
-      map.setView([19.85, 85.85], 9, { animate: true, duration: 0.8 });
-    } else if (cameraMode === 'overview' && allTrackPoints && allTrackPoints.length > 0) {
-      const validPoints = allTrackPoints
-        .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
-        .map((pt) => [pt.lat, pt.lon]);
-      if (validPoints.length > 0) {
-        map.fitBounds(L.latLngBounds(validPoints), { padding: [60, 60], maxZoom: 8, animate: true });
-      }
+      map.panTo([currentTrackPoint.lat, currentTrackPoint.lon], { animate: true, duration: 0.5 });
     }
-  }, [cameraMode, currentTrackPoint, isMapReady, allTrackPoints]);
-
-  // Auto-follow when playing simulation
-  useEffect(() => {
-    if (isPlaying && cameraMode !== 'follow') {
-      setCameraMode('follow');
-    }
-  }, [isPlaying, cameraMode]);
+  }, [currentTrackPoint, cameraMode, isMapReady]);
 
   // Update Inundation Layer
   useEffect(() => {
@@ -600,7 +624,7 @@ export const MapComponent: React.FC<MapProps> = ({
       [19.920, 85.875],
       [19.980, 85.890],
       [20.050, 85.870],
-      [20.120, 85.835], // Pipili Higher Ground
+      [20.120, 85.835],
     ];
 
     L.polyline(routeCoords, {
@@ -619,93 +643,62 @@ export const MapComponent: React.FC<MapProps> = ({
       {/* Map DOM Container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
 
-      {/* Floating Layer Controls Toolbar (Top Left) */}
+      {/* UNIFIED TACTICAL COMMAND RIBBON ACROSS TOP (Zero Overlap Guaranteed) */}
       <div
+        ref={toolbarRef}
         className="glass-panel"
         style={{
           position: 'absolute',
-          top: '16px',
-          left: '16px',
-          zIndex: 500,
-          padding: '6px 12px',
+          top: '12px',
+          left: '12px',
+          right: '12px',
+          zIndex: 1000,
+          padding: '6px 14px',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          justifyContent: 'space-between',
+          gap: '12px',
+          flexWrap: 'wrap',
+          boxShadow: 'var(--shadow-md)',
+          borderRadius: '10px',
+          pointerEvents: 'auto',
         }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        onDoubleClick={(e) => e.stopPropagation()}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginRight: '2px' }}>
-          <Layers size={14} color="var(--accent-primary)" />
-          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
-            LAYERS:
-          </span>
-        </div>
+        {/* Left Section: Operational GIS Layers */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginRight: '4px' }}>
+            <Layers size={14} color="var(--accent-primary)" />
+            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
+              LAYERS:
+            </span>
+          </div>
 
-        {[
-          { key: 'track', label: 'Cyclone Track', icon: '🌀' },
-          { key: 'inundation', label: 'Surge Screening', icon: '🌊' },
-          { key: 'infrastructure', label: 'Critical Assets', icon: '🏥' },
-          { key: 'route', label: 'Safe Corridor', icon: '🚗' },
-        ].map((item) => {
-          const isAct = (layersVisible as any)[item.key];
-          return (
-            <button
-              key={item.key}
-              onClick={() =>
-                setLayersVisible((prev) => ({ ...prev, [item.key]: !(prev as any)[item.key] }))
-              }
-              className={isAct ? 'btn-outline-cyan' : 'btn-secondary'}
-              style={{
-                padding: '4px 9px',
-                fontSize: '0.72rem',
-                gap: '5px',
-                background: isAct ? 'var(--bg-badge)' : undefined,
-              }}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Floating Basemap & Camera Preset Toolbar (Top Right) */}
-      <div
-        className="glass-panel"
-        style={{
-          position: 'absolute',
-          top: '16px',
-          right: '16px',
-          zIndex: 500,
-          padding: '6px 12px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
-        {/* Basemap Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
-            BASEMAP:
-          </span>
           {[
-            { key: 'canvas', label: 'Tactical', icon: '🗺️' },
-            { key: 'satellite', label: 'Satellite', icon: '🛰️' },
-            { key: 'osm', label: 'Streets', icon: '🌐' },
+            { key: 'track', label: 'Cyclone Track', icon: '🌀' },
+            { key: 'inundation', label: 'Surge Screening', icon: '🌊' },
+            { key: 'infrastructure', label: 'Critical Assets', icon: '🏥' },
+            { key: 'route', label: 'Safe Corridor', icon: '🚗' },
           ].map((item) => {
-            const isAct = basemapStyle === item.key;
+            const isAct = (layersVisible as any)[item.key];
             return (
               <button
                 key={item.key}
-                onClick={() => {
-                  setBasemapStyle(item.key as any);
-                  applyBasemap(item.key as any);
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLayersVisible((prev) => ({ ...prev, [item.key]: !(prev as any)[item.key] }));
                 }}
                 className={isAct ? 'btn-outline-cyan' : 'btn-secondary'}
                 style={{
-                  padding: '4px 8px',
+                  padding: '4px 9px',
                   fontSize: '0.72rem',
-                  gap: '4px',
+                  gap: '5px',
+                  cursor: 'pointer',
                   background: isAct ? 'var(--bg-badge)' : undefined,
+                  userSelect: 'none',
                 }}
               >
                 <span>{item.icon}</span>
@@ -715,59 +708,123 @@ export const MapComponent: React.FC<MapProps> = ({
           })}
         </div>
 
-        <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle, rgba(255,255,255,0.15))', margin: '0 2px' }} />
+        {/* Right Section: Basemap & Immediate Camera Controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {/* Basemap Switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif", marginRight: '2px' }}>
+              BASEMAP:
+            </span>
+            {[
+              { key: 'canvas', label: 'Tactical', icon: '🗺️' },
+              { key: 'satellite', label: 'Satellite', icon: '🛰️' },
+              { key: 'osm', label: 'Streets', icon: '🌐' },
+            ].map((item) => {
+              const isAct = basemapStyle === item.key;
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setBasemapStyle(item.key as any);
+                    applyBasemap(item.key as any);
+                  }}
+                  className={isAct ? 'btn-outline-cyan' : 'btn-secondary'}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '0.72rem',
+                    gap: '4px',
+                    cursor: 'pointer',
+                    background: isAct ? 'var(--bg-badge)' : undefined,
+                    userSelect: 'none',
+                  }}
+                >
+                  <span>{item.icon}</span>
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Camera Presets */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <Compass size={13} color="var(--accent-primary)" />
-          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif" }}>
-            CAMERA:
-          </span>
+          <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle, rgba(255,255,255,0.15))', margin: '0 4px' }} />
 
-          <button
-            onClick={() => setCameraMode('follow')}
-            className={cameraMode === 'follow' ? 'btn-outline-cyan' : 'btn-secondary'}
-            style={{
-              padding: '4px 8px',
-              fontSize: '0.72rem',
-              gap: '4px',
-              background: cameraMode === 'follow' ? 'var(--bg-badge)' : undefined,
-            }}
-            title="Keep active storm eye centered during simulation playback"
-          >
-            <Eye size={12} color={cameraMode === 'follow' ? '#38bdf8' : undefined} />
-            <span>Follow</span>
-          </button>
+          {/* Interactive Camera Lenses */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Compass size={13} color="var(--accent-primary)" />
+            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', fontFamily: "'Outfit', sans-serif", marginRight: '2px' }}>
+              CAMERA:
+            </span>
 
-          <button
-            onClick={() => setCameraMode('overview')}
-            className={cameraMode === 'overview' ? 'btn-outline-cyan' : 'btn-secondary'}
-            style={{
-              padding: '4px 8px',
-              fontSize: '0.72rem',
-              gap: '4px',
-              background: cameraMode === 'overview' ? 'var(--bg-badge)' : undefined,
-            }}
-            title="Fit complete 900km Bay of Bengal trajectory"
-          >
-            <Navigation size={12} />
-            <span>Overview</span>
-          </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCameraChange('follow');
+              }}
+              className={cameraMode === 'follow' ? 'btn-outline-cyan' : 'btn-secondary'}
+              style={{
+                padding: '4px 9px',
+                fontSize: '0.72rem',
+                gap: '5px',
+                cursor: 'pointer',
+                background: cameraMode === 'follow' ? 'var(--bg-badge)' : undefined,
+                borderColor: cameraMode === 'follow' ? 'var(--accent-primary)' : undefined,
+                fontWeight: cameraMode === 'follow' ? 700 : 500,
+                userSelect: 'none',
+              }}
+              title="Lock camera onto active cyclone eye during simulation"
+            >
+              <Eye size={12} color={cameraMode === 'follow' ? '#38bdf8' : undefined} />
+              <span>Follow Eye</span>
+            </button>
 
-          <button
-            onClick={() => setCameraMode('landfall')}
-            className={cameraMode === 'landfall' ? 'btn-outline-cyan' : 'btn-secondary'}
-            style={{
-              padding: '4px 8px',
-              fontSize: '0.72rem',
-              gap: '4px',
-              background: cameraMode === 'landfall' ? 'var(--bg-badge)' : undefined,
-            }}
-            title="Focus on Puri Coastline & Critical Infrastructure"
-          >
-            <MapPin size={12} />
-            <span>Landfall</span>
-          </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCameraChange('overview');
+              }}
+              className={cameraMode === 'overview' ? 'btn-outline-cyan' : 'btn-secondary'}
+              style={{
+                padding: '4px 9px',
+                fontSize: '0.72rem',
+                gap: '5px',
+                cursor: 'pointer',
+                background: cameraMode === 'overview' ? 'var(--bg-badge)' : undefined,
+                borderColor: cameraMode === 'overview' ? 'var(--accent-primary)' : undefined,
+                fontWeight: cameraMode === 'overview' ? 700 : 500,
+                userSelect: 'none',
+              }}
+              title="Fit entire 900km Bay of Bengal track"
+            >
+              <Navigation size={12} />
+              <span>All Track</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCameraChange('landfall');
+              }}
+              className={cameraMode === 'landfall' ? 'btn-outline-cyan' : 'btn-secondary'}
+              style={{
+                padding: '4px 9px',
+                fontSize: '0.72rem',
+                gap: '5px',
+                cursor: 'pointer',
+                background: cameraMode === 'landfall' ? 'var(--bg-badge)' : undefined,
+                borderColor: cameraMode === 'landfall' ? 'var(--accent-primary)' : undefined,
+                fontWeight: cameraMode === 'landfall' ? 700 : 500,
+                userSelect: 'none',
+              }}
+              title="Focus camera directly on Puri Coastline & Inundation screening"
+            >
+              <MapPin size={12} />
+              <span>Landfall</span>
+            </button>
+          </div>
         </div>
       </div>
 
