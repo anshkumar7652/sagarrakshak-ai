@@ -61,30 +61,38 @@ export default function OperationalDashboardPage() {
     init();
   }, []);
 
-  // Reactive Re-run when scenario, inundation, or time step changes
+  // Reactive Re-run when scenario, inundation, or time step changes (debounced for smooth scrubbing)
   useEffect(() => {
-    async function updateAnalysis() {
-      const analysis = await runAnalysis(scenarioId, inundationScenario, timeStepIndex);
-      setAnalysisData(analysis);
-    }
-    updateAnalysis();
+    let isCancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const analysis = await runAnalysis(scenarioId, inundationScenario, timeStepIndex);
+        if (!isCancelled && analysis) {
+          setAnalysisData(analysis);
+        }
+      } catch (err) {
+        console.warn('Reactive analysis update error:', err);
+      }
+    }, 120);
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
   }, [scenarioId, inundationScenario, timeStepIndex]);
 
-  // Timeline auto-play simulation timer
+  // Timeline auto-play simulation timer (clean interval without illegal state setter calls in reducer)
   useEffect(() => {
-    let timer: any;
-    if (isPlayingTime && cycloneTrack) {
-      timer = setInterval(() => {
-        setTimeStepIndex((prev) => {
-          if (prev >= cycloneTrack.track_points.length - 1) {
-            setIsPlayingTime(false);
-            return prev;
-          }
-          return prev + 1;
-        });
-      }, 2500);
-    }
-    return () => clearInterval(timer);
+    if (!isPlayingTime || !cycloneTrack || !cycloneTrack.track_points.length) return;
+
+    const interval = setInterval(() => {
+      setTimeStepIndex((prev) => {
+        const maxIdx = cycloneTrack.track_points.length - 1;
+        return prev >= maxIdx ? 0 : prev + 1;
+      });
+    }, 2500);
+
+    return () => clearInterval(interval);
   }, [isPlayingTime, cycloneTrack]);
 
   // Handle Generate Advisory

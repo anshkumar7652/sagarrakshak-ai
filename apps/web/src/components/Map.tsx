@@ -220,71 +220,84 @@ export const MapComponent: React.FC<MapProps> = ({
   useEffect(() => {
     const L = (window as any).L;
     const map = mapInstanceRef.current;
-    const group = layerGroupsRef.current.track;
+    const group = layerGroupsRef.current?.track;
     if (!L || !map || !group || !allTrackPoints || allTrackPoints.length === 0) return;
 
-    group.clearLayers();
-    if (!layersVisible.track) return;
+    try {
+      group.clearLayers();
+      if (!layersVisible.track) return;
 
-    // Track Polyline
-    const latLngs = allTrackPoints.map((pt) => [pt.lat, pt.lon]);
-    L.polyline(latLngs, {
-      color: '#38bdf8',
-      weight: 3,
-      opacity: 0.8,
-      dashArray: '6, 6',
-    }).addTo(group);
+      // Track Polyline
+      const latLngs = allTrackPoints
+        .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
+        .map((pt) => [pt.lat, pt.lon]);
 
-    // Track Points (Circles)
-    allTrackPoints.forEach((pt) => {
-      const isPast = new Date(pt.timestamp) <= new Date(currentTrackPoint.timestamp);
-      const isCurrent = pt.timestamp === currentTrackPoint.timestamp;
-
-      let radius = 5;
-      let color = '#38bdf8';
-      let fillOpacity = 0.5;
-
-      if (isCurrent) {
-        radius = 9;
-        color = '#ef4444';
-        fillOpacity = 1;
-      } else if (isPast) {
-        radius = 4;
-        color = '#64748b';
-        fillOpacity = 0.4;
+      if (latLngs.length > 0) {
+        L.polyline(latLngs, {
+          color: '#38bdf8',
+          weight: 3,
+          opacity: 0.8,
+          dashArray: '6, 6',
+        }).addTo(group);
       }
 
-      const circle = L.circleMarker([pt.lat, pt.lon], {
-        radius,
-        color,
-        fillColor: color,
-        fillOpacity,
-        weight: isCurrent ? 3 : 1,
+      const activePoint = currentTrackPoint || allTrackPoints[0];
+
+      // Track Points (Circles)
+      allTrackPoints.forEach((pt) => {
+        if (!pt || typeof pt.lat !== 'number' || typeof pt.lon !== 'number') return;
+
+        const isPast = activePoint?.timestamp ? new Date(pt.timestamp) <= new Date(activePoint.timestamp) : true;
+        const isCurrent = activePoint?.timestamp ? pt.timestamp === activePoint.timestamp : false;
+
+        let radius = 5;
+        let color = '#38bdf8';
+        let fillOpacity = 0.5;
+
+        if (isCurrent) {
+          radius = 9;
+          color = '#ef4444';
+          fillOpacity = 1;
+        } else if (isPast) {
+          radius = 4;
+          color = '#64748b';
+          fillOpacity = 0.4;
+        }
+
+        const circle = L.circleMarker([pt.lat, pt.lon], {
+          radius,
+          color,
+          fillColor: color,
+          fillOpacity,
+          weight: isCurrent ? 3 : 1,
+        });
+
+        circle.bindTooltip(`
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px;">
+            <strong>${pt.stage || 'Track Stage'}</strong><br/>
+            Winds: ${pt.wind_kmh || 0} km/h • Pressure: ${pt.pressure_hpa || 0} hPa<br/>
+            ${pt.timestamp ? new Date(pt.timestamp).toUTCString() : ''}
+          </div>
+        `, { sticky: true });
+
+        circle.addTo(group);
       });
 
-      circle.bindTooltip(`
-        <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px;">
-          <strong>${pt.stage}</strong><br/>
-          Winds: ${pt.wind_kmh} km/h • Pressure: ${pt.pressure_hpa} hPa<br/>
-          ${new Date(pt.timestamp).toUTCString()}
-        </div>
-      `, { sticky: true });
-
-      circle.addTo(group);
-    });
-
-    // Uncertainty Cone around Current Point
-    if (currentTrackPoint) {
-      L.circle([currentTrackPoint.lat, currentTrackPoint.lon], {
-        radius: (currentTrackPoint.cone_radius_km || 65) * 1000,
-        color: '#f59e0b',
-        weight: 1,
-        dashArray: '3, 6',
-        fillColor: '#f59e0b',
-        fillOpacity: 0.12,
-      })
-        .bindTooltip('Cone of Track Uncertainty (IMD/JTWC)', { sticky: true })
-        .addTo(group);
+      // Uncertainty Cone around Current Point
+      if (activePoint && typeof activePoint.lat === 'number' && typeof activePoint.lon === 'number') {
+        L.circle([activePoint.lat, activePoint.lon], {
+          radius: (activePoint.cone_radius_km || 65) * 1000,
+          color: '#f59e0b',
+          weight: 1,
+          dashArray: '3, 6',
+          fillColor: '#f59e0b',
+          fillOpacity: 0.12,
+        })
+          .bindTooltip('Cone of Track Uncertainty (IMD/JTWC)', { sticky: true })
+          .addTo(group);
+      }
+    } catch (err) {
+      console.warn('Track layer render error handled:', err);
     }
   }, [currentTrackPoint, allTrackPoints, layersVisible.track]);
 
@@ -292,101 +305,108 @@ export const MapComponent: React.FC<MapProps> = ({
   useEffect(() => {
     const L = (window as any).L;
     const map = mapInstanceRef.current;
-    const group = layerGroupsRef.current.infrastructure;
+    const group = layerGroupsRef.current?.infrastructure;
     if (!L || !map || !group || !assets) return;
 
-    group.clearLayers();
-    if (!layersVisible.infrastructure) return;
+    try {
+      group.clearLayers();
+      if (!layersVisible.infrastructure) return;
 
-    assets.forEach((asset) => {
-      const riskScore = asset.composite_risk_score;
-      let color = '#10b981';
-      if (riskScore >= 0.8) color = '#ef4444';
-      else if (riskScore >= 0.65) color = '#f59e0b';
-      else if (riskScore >= 0.5) color = '#38bdf8';
+      assets.forEach((asset) => {
+        if (!asset || !asset.coordinates || asset.coordinates.length < 2) return;
+        const [lon, lat] = asset.coordinates;
+        if (typeof lat !== 'number' || typeof lon !== 'number' || isNaN(lat) || isNaN(lon)) return;
 
-      let iconSymbol = '🏥';
-      if (asset.type === 'shelter') iconSymbol = '🛡️';
-      else if (asset.type === 'power_substation') iconSymbol = '⚡';
-      else if (asset.type === 'arterial_road') iconSymbol = '🛣️';
+        const riskScore = asset.composite_risk_score || 0;
+        let color = '#10b981';
+        if (riskScore >= 0.8) color = '#ef4444';
+        else if (riskScore >= 0.65) color = '#f59e0b';
+        else if (riskScore >= 0.5) color = '#38bdf8';
 
-      const isSelected = selectedAsset?.asset_id === asset.asset_id;
+        let iconSymbol = '🏥';
+        if (asset.type === 'shelter') iconSymbol = '🛡️';
+        else if (asset.type === 'power_substation') iconSymbol = '⚡';
+        else if (asset.type === 'arterial_road') iconSymbol = '🛣️';
 
-      const markerHtml = `
-        <div style="
-          width: ${isSelected ? '34px' : '26px'};
-          height: ${isSelected ? '34px' : '26px'};
-          border-radius: 50%;
-          background: var(--bg-surface-elevated, #0c1222);
-          border: 2px solid ${color};
-          box-shadow: 0 0 ${isSelected ? '16px' : '8px'} ${color};
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: ${isSelected ? '14px' : '11px'};
-          cursor: pointer;
-          transition: all 0.2s ease;
-        ">
-          ${iconSymbol}
-        </div>
-      `;
+        const isSelected = selectedAsset?.asset_id === asset.asset_id;
 
-      const customIcon = L.divIcon({
-        html: markerHtml,
-        className: '',
-        iconSize: [isSelected ? 34 : 26, isSelected ? 34 : 26],
-        iconAnchor: [isSelected ? 17 : 13, isSelected ? 17 : 13],
-      });
-
-      const [lon, lat] = asset.coordinates;
-      const marker = L.marker([lat, lon], { icon: customIcon });
-
-      marker.on('click', () => {
-        onSelectAsset(asset);
-      });
-
-      marker.bindPopup(`
-        <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 220px; padding: 4px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 10px; font-weight: 700; color: ${color}; text-transform: uppercase;">
-              Rank #${asset.risk_rank} • ${Math.round(asset.composite_risk_score * 100)}% Risk
-            </span>
-            <span style="font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 6px; border-radius: 4px;">
-              ${asset.criticality}
-            </span>
-          </div>
-          <h4 style="margin: 0 0 4px 0; font-size: 13px; font-weight: 700; color: var(--text-primary);">${asset.name}</h4>
-          <p style="margin: 0 0 6px 0; font-size: 11px; color: var(--text-secondary);">
-            ${asset.district} • Elev: ${asset.elevation_m}m above MSL
-          </p>
-          <div style="background: rgba(239, 68, 68, 0.1); border-left: 2px solid #ef4444; padding: 6px 8px; font-size: 11px; color: var(--text-primary); margin-bottom: 8px;">
-            <strong>Action:</strong> ${asset.recommended_action}
-          </div>
-          <button id="btn-inspect-${asset.asset_id}" style="
-            width: 100%;
-            background: #0284c7;
-            color: #ffffff;
-            border: none;
-            padding: 6px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
+        const markerHtml = `
+          <div style="
+            width: ${isSelected ? '34px' : '26px'};
+            height: ${isSelected ? '34px' : '26px'};
+            border-radius: 50%;
+            background: var(--bg-surface-elevated, #0c1222);
+            border: 2px solid ${color};
+            box-shadow: 0 0 ${isSelected ? '16px' : '8px'} ${color};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: ${isSelected ? '14px' : '11px'};
             cursor: pointer;
+            transition: all 0.2s ease;
           ">
-            Open Full Decision Protocol
-          </button>
-        </div>
-      `);
+            ${iconSymbol}
+          </div>
+        `;
 
-      marker.on('popupopen', () => {
-        const btn = document.getElementById(`btn-inspect-${asset.asset_id}`);
-        if (btn) {
-          btn.onclick = () => onSelectAsset(asset);
-        }
+        const customIcon = L.divIcon({
+          html: markerHtml,
+          className: '',
+          iconSize: [isSelected ? 34 : 26, isSelected ? 34 : 26],
+          iconAnchor: [isSelected ? 17 : 13, isSelected ? 17 : 13],
+        });
+
+        const marker = L.marker([lat, lon], { icon: customIcon });
+
+        marker.on('click', () => {
+          onSelectAsset(asset);
+        });
+
+        marker.bindPopup(`
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 220px; padding: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 10px; font-weight: 700; color: ${color}; text-transform: uppercase;">
+                Rank #${asset.risk_rank || 1} • ${Math.round(riskScore * 100)}% Risk
+              </span>
+              <span style="font-size: 10px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 6px; border-radius: 4px;">
+                ${asset.criticality || 'HIGH'}
+              </span>
+            </div>
+            <h4 style="margin: 0 0 4px 0; font-size: 13px; font-weight: 700; color: var(--text-primary);">${asset.name || 'Critical Asset'}</h4>
+            <p style="margin: 0 0 6px 0; font-size: 11px; color: var(--text-secondary);">
+              ${asset.district || 'Odisha'} • Elev: ${asset.elevation_m || 0}m above MSL
+            </p>
+            <div style="background: rgba(239, 68, 68, 0.1); border-left: 2px solid #ef4444; padding: 6px 8px; font-size: 11px; color: var(--text-primary); margin-bottom: 8px;">
+              <strong>Action:</strong> ${asset.recommended_action || 'Inspect immediate facility readiness'}
+            </div>
+            <button id="btn-inspect-${asset.asset_id}" style="
+              width: 100%;
+              background: #0284c7;
+              color: #ffffff;
+              border: none;
+              padding: 6px;
+              border-radius: 6px;
+              font-size: 11px;
+              font-weight: 600;
+              cursor: pointer;
+            ">
+              Open Full Decision Protocol
+            </button>
+          </div>
+        `);
+
+        marker.on('popupopen', () => {
+          const btn = document.getElementById(`btn-inspect-${asset.asset_id}`);
+          if (btn) {
+            btn.onclick = () => onSelectAsset(asset);
+          }
+        });
+
+        marker.addTo(group);
       });
-
-      marker.addTo(group);
-    });
+    } catch (err) {
+      console.warn('Assets layer render error handled:', err);
+    }
   }, [assets, selectedAsset, layersVisible.infrastructure]);
 
   // Update Safe Evacuation Route Layer

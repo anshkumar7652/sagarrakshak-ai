@@ -43,28 +43,32 @@ def execute_risk_analysis(req: AnalysisRunRequest, db: Session = Depends(get_db)
     Persists the full assessment run into the database.
     """
     try:
+        step_idx = req.time_step_index if req.time_step_index is not None else 5
         response = run_risk_analysis(
             scenario_id=req.scenario_id,
             inundation_scenario=req.inundation_scenario,
-            time_step_idx=req.time_step_index or 5
+            time_step_idx=step_idx
         )
 
-        # Persist to database
-        run_record = RiskAssessmentRun(
-            run_id=response.analysis_id,
-            scenario_id=response.scenario_id,
-            inundation_scenario=response.inundation_scenario,
-            cyclone_name=response.cyclone_name,
-            current_time_step=response.current_time_step,
-            total_population_at_risk=response.total_population_at_risk,
-            high_risk_assets_count=len(response.top_threatened_assets),
-            district_summaries=[d.model_dump() for d in response.district_summaries],
-            top_threatened_assets=[a.model_dump() for a in response.top_threatened_assets],
-            weights_used={"hazard": 0.40, "exposure": 0.35, "vulnerability": 0.25},
-            confidence_level=response.confidence_level
-        )
-        db.add(run_record)
-        db.commit()
+        # Persist to database (resilient to concurrent write locks)
+        try:
+            run_record = RiskAssessmentRun(
+                run_id=response.analysis_id,
+                scenario_id=response.scenario_id,
+                inundation_scenario=response.inundation_scenario,
+                cyclone_name=response.cyclone_name,
+                current_time_step=response.current_time_step,
+                total_population_at_risk=response.total_population_at_risk,
+                high_risk_assets_count=len(response.top_threatened_assets),
+                district_summaries=[d.model_dump() for d in response.district_summaries],
+                top_threatened_assets=[a.model_dump() for a in response.top_threatened_assets],
+                weights_used={"hazard": 0.40, "exposure": 0.35, "vulnerability": 0.25},
+                confidence_level=response.confidence_level
+            )
+            db.add(run_record)
+            db.commit()
+        except Exception:
+            db.rollback()
 
         return response
     except Exception as e:

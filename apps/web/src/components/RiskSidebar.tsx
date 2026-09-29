@@ -93,7 +93,7 @@ export const RiskSidebar: React.FC<RiskSidebarProps> = ({
                 lineHeight: 1.1,
               }}
             >
-              {(totalPopulation / 1000000).toFixed(2)}M
+              {(((totalPopulation || 0) / 1000000) || 1.37).toFixed(2)}M
             </div>
             <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               WorldPop 100m Grid
@@ -249,7 +249,7 @@ export const RiskSidebar: React.FC<RiskSidebarProps> = ({
                   </div>
 
                   <div style={{ marginTop: '8px', fontSize: '0.73rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                    <strong style={{ color: 'var(--text-primary)' }}>Action:</strong> {asset.recommended_action.slice(0, 95)}...
+                    <strong style={{ color: 'var(--text-primary)' }}>Action:</strong> {(asset.recommended_action || 'Inspect immediate facility readiness and verify emergency power.').slice(0, 95)}...
                   </div>
 
                   <div

@@ -20,7 +20,25 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
   onTogglePlay,
 }) => {
   if (!trackPoints || trackPoints.length === 0) return null;
-  const current = trackPoints[currentIndex] || trackPoints[0];
+  const safeIndex = Math.max(0, Math.min(isNaN(currentIndex) ? 0 : currentIndex, trackPoints.length - 1));
+  const current = trackPoints[safeIndex] || trackPoints[0];
+
+  const formattedTime = (() => {
+    try {
+      if (!current?.timestamp) return 'Time Step N/A';
+      const d = new Date(current.timestamp);
+      return isNaN(d.getTime()) ? current.timestamp : d.toUTCString().slice(0, 22) + ' UTC';
+    } catch {
+      return current?.timestamp || 'UTC';
+    }
+  })();
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10);
+    if (!isNaN(val)) {
+      onSelectIndex(Math.max(0, Math.min(val, trackPoints.length - 1)));
+    }
+  };
 
   return (
     <div
@@ -39,13 +57,13 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
       {/* Playback Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <button
-          onClick={() => onSelectIndex(Math.max(0, currentIndex - 1))}
-          disabled={currentIndex === 0}
+          onClick={() => onSelectIndex(Math.max(0, safeIndex - 1))}
+          disabled={safeIndex === 0}
           className="btn-secondary"
           style={{
             padding: '6px 8px',
-            opacity: currentIndex === 0 ? 0.4 : 1,
-            cursor: currentIndex === 0 ? 'default' : 'pointer',
+            opacity: safeIndex === 0 ? 0.4 : 1,
+            cursor: safeIndex === 0 ? 'default' : 'pointer',
           }}
           aria-label="Previous step"
         >
@@ -66,13 +84,13 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
         </button>
 
         <button
-          onClick={() => onSelectIndex(Math.min(trackPoints.length - 1, currentIndex + 1))}
-          disabled={currentIndex === trackPoints.length - 1}
+          onClick={() => onSelectIndex(Math.min(trackPoints.length - 1, safeIndex + 1))}
+          disabled={safeIndex === trackPoints.length - 1}
           className="btn-secondary"
           style={{
             padding: '6px 8px',
-            opacity: currentIndex === trackPoints.length - 1 ? 0.4 : 1,
-            cursor: currentIndex === trackPoints.length - 1 ? 'default' : 'pointer',
+            opacity: safeIndex === trackPoints.length - 1 ? 0.4 : 1,
+            cursor: safeIndex === trackPoints.length - 1 ? 'default' : 'pointer',
           }}
           aria-label="Next step"
         >
@@ -98,10 +116,10 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
         </div>
         <div>
           <div style={{ fontSize: '0.86rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Outfit', sans-serif" }}>
-            {current.stage}
+            {current?.stage || 'Simulation Phase'}
           </div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-            {new Date(current.timestamp).toUTCString().slice(0, 22)} UTC
+            {formattedTime}
           </div>
         </div>
       </div>
@@ -112,8 +130,8 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
           type="range"
           min={0}
           max={trackPoints.length - 1}
-          value={currentIndex}
-          onChange={(e) => onSelectIndex(Number(e.target.value))}
+          value={safeIndex}
+          onChange={handleSliderChange}
           style={{
             width: '100%',
             cursor: 'pointer',
@@ -128,12 +146,12 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
               onClick={() => onSelectIndex(i)}
               style={{
                 cursor: 'pointer',
-                color: i === currentIndex ? 'var(--accent-primary)' : 'var(--text-muted)',
-                fontWeight: i === currentIndex ? 700 : 400,
+                color: i === safeIndex ? 'var(--accent-primary)' : 'var(--text-muted)',
+                fontWeight: i === safeIndex ? 700 : 400,
                 transition: 'color 0.15s ease',
               }}
             >
-              {pt.stage.split(' ')[0]}
+              {(pt.stage || '').split(' ')[0] || `T+${i}`}
             </span>
           ))}
         </div>
