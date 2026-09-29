@@ -190,6 +190,18 @@ def run_risk_analysis(scenario_id: str = "fani_historical", inundation_scenario:
         ]
     }
 
+    # Dispatch High Risk Alerts
+    from app.services.notifications.dispatcher import email_dispatcher
+    critical_threats = [a for a in assessed_assets if a.composite_risk_score >= 0.85 and a.type in ["hospital", "shelter"]]
+    critical_districts = [d for d in dist_summaries if d.composite_risk_score >= 0.80]
+    
+    if critical_threats or critical_districts:
+        email_dispatcher.dispatch_high_risk_alerts(
+            cyclone_name=track.name,
+            districts=critical_districts,
+            assets=critical_threats
+        )
+
     return AnalysisRunResponse(
         analysis_id=f"ANALYSIS_{uuid.uuid4().hex[:10].upper()}",
         scenario_id=scenario_id,
