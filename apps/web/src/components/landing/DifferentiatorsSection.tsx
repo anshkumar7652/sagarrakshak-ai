@@ -116,6 +116,7 @@ export function DifferentiatorsSection() {
             alignItems: 'center',
           }}
         >
+          <ScrollReveal variant="fade-left" duration={650} threshold={0.08}>
           <div>
             <h3
               style={{
@@ -139,8 +140,10 @@ export function DifferentiatorsSection() {
               <ArrowRight size={16} />
             </Link>
           </div>
+          </ScrollReveal>
 
           {/* Sample Table Card */}
+          <ScrollReveal variant="fade-right" duration={650} delay={100} threshold={0.08}>
           <div
             className="glass-panel"
             style={{
@@ -208,6 +211,7 @@ export function DifferentiatorsSection() {
               ))}
             </div>
           </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

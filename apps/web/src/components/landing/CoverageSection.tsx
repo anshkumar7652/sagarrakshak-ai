@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MapPin, ShieldCheck, Check, Search } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function CoverageSection() {
   const [districtQuery, setDistrictQuery] = useState('');
@@ -44,6 +45,7 @@ export function CoverageSection() {
           }}
         >
           {/* Left Column: Coverage Details & Search */}
+          <ScrollReveal variant="fade-left" duration={700} threshold={0.08}>
           <div>
             <div
               style={{
@@ -173,8 +175,10 @@ export function CoverageSection() {
               ))}
             </div>
           </div>
+          </ScrollReveal>
 
           {/* Right Column: Operational SLA Guarantee Box (ShieldPest style) */}
+          <ScrollReveal variant="fade-right" duration={700} delay={120} threshold={0.08}>
           <div
             className="interactive-card"
             style={{
@@ -231,6 +235,7 @@ export function CoverageSection() {
               ))}
             </div>
           </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

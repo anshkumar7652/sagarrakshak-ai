@@ -2,12 +2,7 @@
 
 import React, { useEffect, useRef, useState, CSSProperties, ReactNode } from 'react';
 
-/**
- * Animation variants for scroll-triggered reveals.
- * Each variant defines the initial hidden state — the element animates
- * FROM these values TO normal (opacity:1, transform:none) when in view.
- */
-type AnimationVariant =
+export type AnimationVariant =
   | 'fade-up'
   | 'fade-down'
   | 'fade-left'
@@ -25,11 +20,11 @@ interface ScrollRevealProps {
   variant?: AnimationVariant;
   /** Delay in ms before animation starts after triggering. Default: 0 */
   delay?: number;
-  /** Duration of the animation in ms. Default: 700 */
+  /** Duration of the animation in ms. Default: 650 */
   duration?: number;
-  /** IntersectionObserver threshold (0-1). Default: 0.15 */
+  /** IntersectionObserver threshold (0-1). Default: 0.08 */
   threshold?: number;
-  /** Extra CSS easing. Default: 'cubic-bezier(0.16, 1, 0.3, 1)' (expo-out) */
+  /** Extra CSS easing. Default: 'cubic-bezier(0.16, 1, 0.3, 1)' (smooth expo-out) */
   easing?: string;
   /** If true, the animation replays every time the element re-enters viewport. Default: false */
   replay?: boolean;
@@ -38,40 +33,40 @@ interface ScrollRevealProps {
   /** Additional className */
   className?: string;
   /** Wrapper element type. Default: 'div' */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
-// Map of variant → initial CSS transform + opacity
-const VARIANT_STYLES: Record<AnimationVariant, CSSProperties> = {
-  'fade-up':         { opacity: 0, transform: 'translateY(50px)' },
-  'fade-down':       { opacity: 0, transform: 'translateY(-50px)' },
-  'fade-left':       { opacity: 0, transform: 'translateX(-60px)' },
-  'fade-right':      { opacity: 0, transform: 'translateX(60px)' },
-  'zoom-in':         { opacity: 0, transform: 'scale(0.88)' },
-  'zoom-out':        { opacity: 0, transform: 'scale(1.12)' },
-  'flip-up':         { opacity: 0, transform: 'perspective(800px) rotateX(12deg) translateY(40px)' },
-  'blur-in':         { opacity: 0, filter: 'blur(12px)', transform: 'translateY(20px)' },
-  'slide-up-spring': { opacity: 0, transform: 'translateY(70px) scale(0.96)' },
-  'scale-rotate':    { opacity: 0, transform: 'scale(0.85) rotate(-3deg)' },
+// Initial hidden state for each variant
+const VARIANT_INITIAL_STYLES: Record<AnimationVariant, CSSProperties> = {
+  'fade-up':         { opacity: 0, transform: 'translateY(60px)' },
+  'fade-down':       { opacity: 0, transform: 'translateY(-60px)' },
+  'fade-left':       { opacity: 0, transform: 'translateX(-70px)' },
+  'fade-right':      { opacity: 0, transform: 'translateX(70px)' },
+  'zoom-in':         { opacity: 0, transform: 'scale(0.84)' },
+  'zoom-out':        { opacity: 0, transform: 'scale(1.15)' },
+  'flip-up':         { opacity: 0, transform: 'perspective(900px) rotateX(16deg) translateY(50px)' },
+  'blur-in':         { opacity: 0, filter: 'blur(10px)', transform: 'translateY(30px)' },
+  'slide-up-spring': { opacity: 0, transform: 'translateY(75px) scale(0.94)' },
+  'scale-rotate':    { opacity: 0, transform: 'scale(0.85) rotate(-3.5deg)' },
 };
 
-// Revealed (visible) state for all variants
-const REVEALED_BASE: CSSProperties = {
+// Visible revealed state
+const VARIANT_REVEALED_STYLES: CSSProperties = {
   opacity: 1,
-  transform: 'none',
-  filter: 'none',
+  transform: 'translate3d(0, 0, 0) scale(1) rotate(0deg)',
+  filter: 'blur(0px)',
 };
 
 export function ScrollReveal({
   children,
   variant = 'fade-up',
   delay = 0,
-  duration = 700,
-  threshold = 0.15,
+  duration = 650,
+  threshold = 0.08,
   easing = 'cubic-bezier(0.16, 1, 0.3, 1)',
   replay = false,
   style,
-  className,
+  className = '',
   as: Tag = 'div',
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -81,13 +76,7 @@ export function ScrollReveal({
     const node = ref.current;
     if (!node) return;
 
-    // Respect prefers-reduced-motion
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      setIsVisible(true);
-      return;
-    }
-
+    // Use IntersectionObserver with generous rootMargin so elements animate visibly as they appear
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -99,7 +88,10 @@ export function ScrollReveal({
           setIsVisible(false);
         }
       },
-      { threshold, rootMargin: '0px 0px -40px 0px' }
+      {
+        threshold,
+        rootMargin: '0px 0px -30px 0px',
+      }
     );
 
     observer.observe(node);
@@ -109,54 +101,40 @@ export function ScrollReveal({
     };
   }, [threshold, replay]);
 
-  const hiddenStyles = VARIANT_STYLES[variant] || VARIANT_STYLES['fade-up'];
+  const initialStyles = VARIANT_INITIAL_STYLES[variant] || VARIANT_INITIAL_STYLES['fade-up'];
 
   const computedStyle: CSSProperties = {
     ...style,
     willChange: 'opacity, transform, filter',
-    transitionProperty: 'opacity, transform, filter',
-    transitionDuration: `${duration}ms`,
-    transitionTimingFunction: easing,
-    transitionDelay: `${delay}ms`,
-    ...(isVisible ? REVEALED_BASE : hiddenStyles),
+    transition: `opacity ${duration}ms ${easing} ${delay}ms, transform ${duration}ms ${easing} ${delay}ms, filter ${duration}ms ${easing} ${delay}ms`,
+    ...(isVisible ? VARIANT_REVEALED_STYLES : initialStyles),
   };
 
-  // Use createElement to support dynamic tag
   return React.createElement(
     Tag as string,
     {
       ref,
       style: computedStyle,
-      className,
+      className: `${className} scroll-reveal-node ${isVisible ? 'revealed' : 'hidden'}`,
     },
     children
   );
 }
 
 /**
- * Stagger wrapper — applies incrementing delays to each child ScrollReveal.
- * Usage:
- * <StaggerReveal stagger={100}>
- *   <ScrollReveal><Card1 /></ScrollReveal>
- *   <ScrollReveal><Card2 /></ScrollReveal>
- * </StaggerReveal>
- *
- * Each child's delay = index * stagger
+ * Stagger Reveal Container for groups of cards or items
  */
-interface StaggerRevealProps {
+export function StaggerReveal({
+  children,
+  stagger = 100,
+  style,
+  className,
+}: {
   children: ReactNode;
-  /** Base delay increment in ms between each child. Default: 80 */
   stagger?: number;
   style?: CSSProperties;
   className?: string;
-}
-
-export function StaggerReveal({
-  children,
-  stagger = 80,
-  style,
-  className,
-}: StaggerRevealProps) {
+}) {
   const childArray = React.Children.toArray(children);
 
   return (

@@ -107,6 +107,9 @@ export const MapComponent: React.FC<MapProps> = ({
     if (typeof window === 'undefined' || !mapContainerRef.current) return;
     if (mapInstanceRef.current) return;
 
+    let resizeObserver: ResizeObserver | null = null;
+    let t1: any, t2: any, t3: any;
+
     const L = (window as any).L;
     if (!L) {
       const script = document.createElement('script');
@@ -122,6 +125,13 @@ export const MapComponent: React.FC<MapProps> = ({
     function initLeaflet() {
       const Leaflet = (window as any).L;
       if (!Leaflet || !mapContainerRef.current) return;
+
+      // Prevent "Map container is already initialized" crash on React StrictMode or re-renders
+      if ((mapContainerRef.current as any)._leaflet_id) {
+        try {
+          delete (mapContainerRef.current as any)._leaflet_id;
+        } catch (_) {}
+      }
 
       const map = Leaflet.map(mapContainerRef.current, {
         center: [17.8, 85.5],
@@ -142,7 +152,45 @@ export const MapComponent: React.FC<MapProps> = ({
 
       mapInstanceRef.current = map;
       applyBasemap(basemapStyleRef.current);
-      setIsMapReady(true);
+
+      // Only signal map is ready when Leaflet has finished internal layout
+      map.whenReady(() => {
+        try {
+          map.invalidateSize(false);
+        } catch (_) {}
+        setIsMapReady(true);
+      });
+
+      // Keep map size synchronized through layout calculation passes
+      t1 = setTimeout(() => {
+        if (mapInstanceRef.current) {
+          try { mapInstanceRef.current.invalidateSize(false); } catch (_) {}
+        }
+      }, 60);
+
+      t2 = setTimeout(() => {
+        if (mapInstanceRef.current) {
+          try { mapInstanceRef.current.invalidateSize(false); } catch (_) {}
+        }
+      }, 200);
+
+      t3 = setTimeout(() => {
+        if (mapInstanceRef.current) {
+          try { mapInstanceRef.current.invalidateSize(false); } catch (_) {}
+        }
+      }, 500);
+
+      // Monitor map container resizing (e.g. sidebar toggle or window resize)
+      if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+        resizeObserver = new ResizeObserver(() => {
+          if (mapInstanceRef.current) {
+            try {
+              mapInstanceRef.current.invalidateSize(false);
+            } catch (_) {}
+          }
+        });
+        resizeObserver.observe(mapContainerRef.current);
+      }
     }
 
     // Observer for light/dark theme change
@@ -155,9 +203,15 @@ export const MapComponent: React.FC<MapProps> = ({
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      if (resizeObserver) resizeObserver.disconnect();
       observer.disconnect();
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.remove();
+        } catch (_) {}
         mapInstanceRef.current = null;
       }
       setIsMapReady(false);
@@ -183,20 +237,36 @@ export const MapComponent: React.FC<MapProps> = ({
 
     try {
       const validPoints = allTrackPoints
-        .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
+        .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number' && !isNaN(pt.lat) && !isNaN(pt.lon))
         .map((pt) => [pt.lat, pt.lon]);
 
       if (validPoints.length > 0) {
         const bounds = L.latLngBounds(validPoints);
-        map.fitBounds(bounds, { padding: [60, 60], maxZoom: 8 });
-        initialFittedRef.current = true;
+        if (bounds.isValid()) {
+          map.invalidateSize(false);
+          const mapSize = map.getSize();
+          if (mapSize.x > 0 && mapSize.y > 0) {
+            map.fitBounds(bounds, { padding: [60, 60], maxZoom: 8 });
+            initialFittedRef.current = true;
+          } else {
+            setTimeout(() => {
+              try {
+                if (mapInstanceRef.current && bounds.isValid()) {
+                  mapInstanceRef.current.invalidateSize(false);
+                  mapInstanceRef.current.fitBounds(bounds, { padding: [60, 60], maxZoom: 8 });
+                  initialFittedRef.current = true;
+                }
+              } catch (_) {}
+            }, 180);
+          }
+        }
       }
     } catch (e) {
       console.warn('Initial track fit error:', e);
     }
   }, [isMapReady, allTrackPoints]);
 
-  // Direct, immediate camera action handler
+  // Direct, immediate camera action handler with safety checks
   const handleCameraChange = (mode: 'follow' | 'overview' | 'landfall') => {
     setCameraMode(mode);
     const map = mapInstanceRef.current;
@@ -204,17 +274,21 @@ export const MapComponent: React.FC<MapProps> = ({
     if (!map) return;
 
     try {
+      map.invalidateSize(false);
       if (mode === 'follow') {
-        if (currentTrackPoint && typeof currentTrackPoint.lat === 'number') {
+        if (currentTrackPoint && typeof currentTrackPoint.lat === 'number' && typeof currentTrackPoint.lon === 'number') {
           map.setView([currentTrackPoint.lat, currentTrackPoint.lon], Math.max(map.getZoom(), 8), { animate: true });
         }
       } else if (mode === 'overview') {
         if (Leaflet && allTrackPoints && allTrackPoints.length > 0) {
           const validPoints = allTrackPoints
-            .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number')
+            .filter((pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number' && !isNaN(pt.lat) && !isNaN(pt.lon))
             .map((pt) => [pt.lat, pt.lon]);
           if (validPoints.length > 0) {
-            map.fitBounds(Leaflet.latLngBounds(validPoints), { padding: [60, 60], maxZoom: 8, animate: true });
+            const bounds = Leaflet.latLngBounds(validPoints);
+            if (bounds.isValid()) {
+              map.fitBounds(bounds, { padding: [60, 60], maxZoom: 8, animate: true });
+            }
           }
         }
       } else if (mode === 'landfall') {
@@ -230,8 +304,12 @@ export const MapComponent: React.FC<MapProps> = ({
     const map = mapInstanceRef.current;
     if (!map || !isMapReady) return;
 
-    if (cameraMode === 'follow' && currentTrackPoint && typeof currentTrackPoint.lat === 'number') {
-      map.panTo([currentTrackPoint.lat, currentTrackPoint.lon], { animate: true, duration: 0.5 });
+    if (cameraMode === 'follow' && currentTrackPoint && typeof currentTrackPoint.lat === 'number' && typeof currentTrackPoint.lon === 'number') {
+      try {
+        map.panTo([currentTrackPoint.lat, currentTrackPoint.lon], { animate: true, duration: 0.5 });
+      } catch (err) {
+        console.warn('Follow pan error:', err);
+      }
     }
   }, [currentTrackPoint, cameraMode, isMapReady]);
 
@@ -279,20 +357,23 @@ export const MapComponent: React.FC<MapProps> = ({
     };
 
     const cfg = surgeConfigs[inundationScenario];
-    cfg.coords.forEach((polygonCoords: any) => {
-      L.polygon(polygonCoords, {
-        color: cfg.color,
-        weight: 1.5,
-        dashArray: '4, 4',
-        fillColor: cfg.color,
-        fillOpacity: cfg.fillOpacity,
-      })
-        .bindTooltip(`<b>${cfg.label}</b><br/>USGS SRTM 30m Hydro-connectivity Screening`, {
-          sticky: true,
-          className: 'leaflet-tooltip-dark',
+    if (cfg && cfg.coords) {
+      cfg.coords.forEach((polygonCoords: any) => {
+        L.polygon(polygonCoords, {
+          noClip: true,
+          color: cfg.color,
+          weight: 1.5,
+          dashArray: '4, 4',
+          fillColor: cfg.color,
+          fillOpacity: cfg.fillOpacity,
         })
-        .addTo(group);
-    });
+          .bindTooltip(`<b>${cfg.label}</b><br/>USGS SRTM 30m Hydro-connectivity Screening`, {
+            sticky: true,
+            className: 'leaflet-tooltip-dark',
+          })
+          .addTo(group);
+      });
+    }
   }, [inundationScenario, layersVisible.inundation, isMapReady]);
 
   // Update Cyclone Track, Path & Active Eye Layer
@@ -303,11 +384,15 @@ export const MapComponent: React.FC<MapProps> = ({
     if (!L || !map || !group || !isMapReady || !allTrackPoints || allTrackPoints.length === 0) return;
 
     try {
+      if (typeof map.getSize === 'function' && (map.getSize().x <= 0 || map.getSize().y <= 0)) {
+        try { map.invalidateSize(false); } catch (_) {}
+      }
+
       group.clearLayers();
       if (!layersVisible.track) return;
 
       const validPoints = allTrackPoints.filter(
-        (pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number'
+        (pt) => typeof pt?.lat === 'number' && typeof pt?.lon === 'number' && !isNaN(pt.lat) && !isNaN(pt.lon)
       );
       if (validPoints.length === 0) return;
 
@@ -318,6 +403,7 @@ export const MapComponent: React.FC<MapProps> = ({
       // 1. FULL BACKGROUND CORRIDOR GLOW LINE (Always shows full trajectory)
       const allLatLngs = validPoints.map((pt) => [pt.lat, pt.lon]);
       L.polyline(allLatLngs, {
+        noClip: true,
         color: 'rgba(56, 189, 248, 0.25)',
         weight: 8,
         opacity: 0.6,
@@ -330,6 +416,7 @@ export const MapComponent: React.FC<MapProps> = ({
       if (pastPoints.length >= 2) {
         const pastLatLngs = pastPoints.map((pt) => [pt.lat, pt.lon]);
         L.polyline(pastLatLngs, {
+          noClip: true,
           color: '#f59e0b',
           weight: 4.5,
           opacity: 0.95,
@@ -342,6 +429,7 @@ export const MapComponent: React.FC<MapProps> = ({
       if (futurePoints.length >= 2) {
         const futureLatLngs = futurePoints.map((pt) => [pt.lat, pt.lon]);
         L.polyline(futureLatLngs, {
+          noClip: true,
           color: '#00f0ff',
           weight: 3.5,
           opacity: 0.9,
@@ -556,7 +644,11 @@ export const MapComponent: React.FC<MapProps> = ({
         const marker = L.marker([lat, lon], { icon: customIcon });
 
         marker.on('click', () => {
-          onSelectAsset(asset);
+          setTimeout(() => {
+            try {
+              onSelectAsset(asset);
+            } catch (_) {}
+          }, 20);
         });
 
         marker.bindPopup(`
@@ -595,7 +687,14 @@ export const MapComponent: React.FC<MapProps> = ({
         marker.on('popupopen', () => {
           const btn = document.getElementById(`btn-inspect-${asset.asset_id}`);
           if (btn) {
-            btn.onclick = () => onSelectAsset(asset);
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              setTimeout(() => {
+                try {
+                  onSelectAsset(asset);
+                } catch (_) {}
+              }, 20);
+            };
           }
         });
 
@@ -628,6 +727,7 @@ export const MapComponent: React.FC<MapProps> = ({
     ];
 
     L.polyline(routeCoords, {
+      noClip: true,
       color: '#10b981',
       weight: 5,
       opacity: 0.9,

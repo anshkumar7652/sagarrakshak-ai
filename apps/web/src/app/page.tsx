@@ -11,58 +11,43 @@ import { DifferentiatorsSection } from '../components/landing/DifferentiatorsSec
 import { TestimonialsSection } from '../components/landing/TestimonialsSection';
 import { CTABanner } from '../components/landing/CTABanner';
 import { Footer } from '../components/landing/Footer';
-import { ScrollReveal } from '../components/landing/ScrollReveal';
+import { ScrollProgressBar } from '../components/landing/ScrollProgressBar';
 
 export default function LandingPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-primary)' }}>
+      {/* Dynamic Scroll Progress Bar fixed to top of viewport */}
+      <ScrollProgressBar />
+
       {/* 1. Sticky Navigation with Theme Toggle & Command Center Link */}
       <LandingNav />
 
-      {/* 2. High-Impact Hero with Tactical Preview & Live Telemetry Card */}
-      <ScrollReveal variant="blur-in" duration={900} threshold={0.1}>
-        <HeroSection />
-      </ScrollReveal>
+      {/* 2. High-Impact Hero with Floating Tactical Terminal & Shimmer CTA */}
+      <HeroSection />
 
-      {/* 3. Authoritative Metric / Stats Counter Row */}
-      <ScrollReveal variant="fade-up" duration={650} threshold={0.2}>
-        <StatsBar />
-      </ScrollReveal>
+      {/* 3. Dynamic Animated Counting Metrics Row */}
+      <StatsBar />
 
-      {/* 4. 6 Core Operational Services & Capabilities Grid */}
-      <ScrollReveal variant="fade-up" duration={750} threshold={0.1}>
-        <FeaturesGrid />
-      </ScrollReveal>
+      {/* 4. 6 Core Operational Services & Capabilities Grid with Staggered Reveals */}
+      <FeaturesGrid />
 
-      {/* 5. 4-Stage Rapid Execution Pipeline */}
-      <ScrollReveal variant="slide-up-spring" duration={800} threshold={0.15}>
-        <ProcessSteps />
-      </ScrollReveal>
+      {/* 5. 4-Stage Execution Pipeline with Flowing Energy Line */}
+      <ProcessSteps />
 
-      {/* 6. Regional Coastal Coverage & Readiness Guarantee */}
-      <ScrollReveal variant="fade-left" duration={750} threshold={0.12}>
-        <CoverageSection />
-      </ScrollReveal>
+      {/* 6. Regional Coastal Coverage with Split Left/Right Entrance */}
+      <CoverageSection />
 
       {/* 7. Technical Differentiators & Live Action Brief Sample */}
-      <ScrollReveal variant="zoom-in" duration={700} threshold={0.12}>
-        <DifferentiatorsSection />
-      </ScrollReveal>
+      <DifferentiatorsSection />
 
       {/* 8. Emergency Commander Endorsements & Social Proof */}
-      <ScrollReveal variant="fade-up" duration={700} delay={100} threshold={0.15}>
-        <TestimonialsSection />
-      </ScrollReveal>
+      <TestimonialsSection />
 
       {/* 9. High-Contrast Conversion CTA Block */}
-      <ScrollReveal variant="scale-rotate" duration={750} threshold={0.2}>
-        <CTABanner />
-      </ScrollReveal>
+      <CTABanner />
 
       {/* 10. Comprehensive Multi-Column Footer */}
-      <ScrollReveal variant="fade-up" duration={600} threshold={0.1}>
-        <Footer />
-      </ScrollReveal>
+      <Footer />
     </div>
   );
 }

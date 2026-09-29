@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Waves, Phone, Mail, MapPin, Shield } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export function Footer() {
   return (
@@ -17,6 +18,7 @@ export function Footer() {
     >
       <div className="landing-container">
         {/* 4 Columns */}
+        <ScrollReveal variant="fade-up" duration={600} threshold={0.06}>
         <div
           style={{
             display: 'grid',
@@ -173,6 +175,7 @@ export function Footer() {
             </div>
           </div>
         </div>
+        </ScrollReveal>
 
         {/* Bottom Bar */}
         <div

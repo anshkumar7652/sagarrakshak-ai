@@ -33,34 +33,36 @@ export function TestimonialsSection() {
     <section id="testimonials" style={{ padding: '90px 0', background: 'var(--bg-primary)' }}>
       <div className="landing-container">
         {/* Section Header */}
-        <div style={{ marginBottom: '48px', maxWidth: '640px' }}>
-          <div
-            style={{
-              fontSize: '0.76rem',
-              fontWeight: 700,
-              fontFamily: 'JetBrains Mono, monospace',
-              color: 'var(--accent-cta)',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              marginBottom: '12px',
-            }}
-          >
-            OPERATIONAL VERIFICATION
+        <ScrollReveal variant="fade-up" duration={600} threshold={0.08}>
+          <div style={{ marginBottom: '48px', maxWidth: '640px' }}>
+            <div
+              style={{
+                fontSize: '0.76rem',
+                fontWeight: 700,
+                fontFamily: 'JetBrains Mono, monospace',
+                color: 'var(--accent-cta)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                marginBottom: '12px',
+              }}
+            >
+              OPERATIONAL VERIFICATION
+            </div>
+            <h2
+              style={{
+                fontSize: 'clamp(2rem, 3.8vw, 2.8rem)',
+                fontWeight: 800,
+                letterSpacing: '-0.025em',
+                marginBottom: '16px',
+              }}
+            >
+              Trusted by Emergency Operations Leaders.
+            </h2>
+            <p style={{ fontSize: '1.02rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+              Tested and benchmarked against historic Category 4 and 5 cyclonic storms across the Eastern Seaboard.
+            </p>
           </div>
-          <h2
-            style={{
-              fontSize: 'clamp(2rem, 3.8vw, 2.8rem)',
-              fontWeight: 800,
-              letterSpacing: '-0.025em',
-              marginBottom: '16px',
-            }}
-          >
-            Trusted by Emergency Operations Leaders.
-          </h2>
-          <p style={{ fontSize: '1.02rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            Tested and benchmarked against historic Category 4 and 5 cyclonic storms across the Eastern Seaboard.
-          </p>
-        </div>
+        </ScrollReveal>
 
         {/* Testimonials 3-Card Grid */}
         <div
