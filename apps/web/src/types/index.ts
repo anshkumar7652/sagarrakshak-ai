@@ -1,3 +1,5 @@
+export type float = number;
+
 export interface TrackPoint {
   timestamp: string;
   lat: float;
@@ -8,8 +10,6 @@ export interface TrackPoint {
   cone_radius_km: number;
   stage: string;
 }
-
-export type float = number;
 
 export interface CycloneTrack {
   cyclone_id: string;
@@ -126,4 +126,122 @@ export interface DispatchReceipt {
   dispatch_channels: string[];
   evidence_trail: string[];
   audit_hash: string;
+}
+
+// Enterprise Registry & Audit Types
+export interface CriticalAssetRecord {
+  id: number;
+  asset_id: string;
+  name: string;
+  type: 'hospital' | 'shelter' | 'power_substation' | 'arterial_road' | string;
+  district: string;
+  subdistrict?: string | null;
+  criticality: string;
+  lat: number;
+  lon: number;
+  elevation_m: number;
+  population_served: number;
+  capacity_beds?: number | null;
+  capacity_persons?: number | null;
+  backup_power: boolean;
+  alternative_name?: string | null;
+  alternative_dist_km?: number | null;
+  source: string;
+  verification_status: string;
+}
+
+export interface AssetStats {
+  total_assets: number;
+  by_type: Record<string, number>;
+  by_district: Record<string, number>;
+  by_criticality: Record<string, number>;
+  backup_power_rate_percent: number;
+  total_population_served: number;
+  total_shelter_capacity: number;
+  total_hospital_beds: number;
+}
+
+export interface AuditLogItem {
+  receipt_id: string;
+  advisory_id: string;
+  officer_name: string;
+  officer_id: string;
+  deoc_center: string;
+  approved_text_en: string;
+  approved_text_hi: string;
+  approved_text_or: string;
+  dispatch_channels: string[];
+  audit_hash: string;
+  has_cap_xml: boolean;
+  dispatched_at_utc: string;
+}
+
+export interface VerificationResult {
+  receipt_id: string;
+  is_valid: boolean;
+  computed_hash: string;
+  recorded_hash: string;
+  officer_signature: string;
+  timestamp: string;
+  tamper_evident_status: string;
+}
+
+export interface BulletinSample {
+  sample_id: string;
+  title: string;
+  source: string;
+  cyclone_name: string;
+  bulletin_no: string;
+  preview_url: string;
+  description: string;
+  preset_extracted: Record<string, any>;
+}
+
+export interface BulletinExtractionResult {
+  upload_id: string;
+  filename: string;
+  bulletin_no: string;
+  system_name: string;
+  stage: string;
+  date_time_utc: string;
+  center_lat: number;
+  center_lon: number;
+  max_wind_kmh: number;
+  central_pressure_hpa: number;
+  landfall_location: string;
+  landfall_eta: string;
+  storm_surge_m: number;
+  red_alert_districts: string[];
+  orange_alert_districts: string[];
+  vision_model_used: string;
+  confidence_score: number;
+  system_comparison: Record<string, any>;
+  raw_ai_summary: string;
+}
+
+export interface CycloneComparisonItem {
+  cyclone_name: string;
+  year: number;
+  category: string;
+  peak_wind_kmh: number;
+  min_pressure_hpa: number;
+  storm_surge_m: number;
+  landfall_region: string;
+  people_evacuated: number;
+  critical_facilities_threatened: number;
+  grid_restoration_days: number;
+  human_loss_mitigation_rate: string;
+}
+
+export interface DistrictRiskProfile {
+  district: string;
+  state: string;
+  coastal_length_km: number;
+  population_at_risk: number;
+  elevation_median_m: number;
+  multi_hazard_vulnerability_index: number;
+  cyclone_shelters_count: number;
+  hospital_bed_capacity: number;
+  backup_power_ready_pct: number;
+  primary_evacuation_corridor: string;
 }

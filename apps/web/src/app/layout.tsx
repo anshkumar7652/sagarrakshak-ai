@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ThemeProvider } from '../components/ui/ThemeProvider';
 
 export const viewport = {
   width: 'device-width',
@@ -8,7 +9,7 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'SagarRakshak AI — Cyclone Impact & Infrastructure Vulnerability Forecaster',
+  title: 'SagarRakshak AI — Coastal Disaster Intelligence & Infrastructure Forecaster',
   description: 'AI-powered operational decision support platform for District Emergency Operations Centres (DEOC) in India. Ingests Google Earth Engine, IMD cyclone feeds, and executes scenario-based surge, rainfall, and infrastructure risk ranking with grounded Gemini advisories.',
   keywords: [
     'Cyclone Impact Forecaster',
@@ -28,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link
           rel="stylesheet"
@@ -37,7 +38,11 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

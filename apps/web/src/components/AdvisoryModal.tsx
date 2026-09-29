@@ -6,15 +6,10 @@ import { approveAdvisory } from '../lib/api';
 import {
   X,
   Sparkles,
-  ShieldCheck,
   CheckCircle2,
   Volume2,
   VolumeX,
-  FileCheck,
-  Copy,
   Send,
-  MessageSquare,
-  AlertCircle,
   Radio,
   Lock,
 } from 'lucide-react';
@@ -98,78 +93,97 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      background: 'rgba(3, 7, 18, 0.82)',
-      backdropFilter: 'blur(16px)',
-      zIndex: 1200,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '24px',
-    }}>
-      <div style={{
-        width: '840px',
-        maxHeight: '92vh',
-        background: 'rgba(12, 18, 34, 0.98)',
-        border: '1px solid var(--border-glow)',
-        borderRadius: '16px',
-        boxShadow: '0 24px 64px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 240, 255, 0.15)',
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: 'var(--overlay-bg)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        zIndex: 1200,
         display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}>
-        {/* Modal Header */}
-        <div style={{
-          padding: '18px 24px',
-          borderBottom: '1px solid var(--border-subtle)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+      }}
+    >
+      <div
+        className="glass-panel"
+        style={{
+          width: '860px',
+          maxWidth: '100%',
+          maxHeight: '92vh',
+          background: 'var(--bg-surface-elevated)',
+          border: '1px solid var(--border-glow)',
+          borderRadius: '16px',
+          boxShadow: 'var(--shadow-lg)',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          background: 'linear-gradient(90deg, rgba(56, 189, 248, 0.12) 0%, transparent 100%)',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '8px',
-              background: 'rgba(0, 240, 255, 0.15)',
-              border: '1px solid var(--accent-cyan)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <Sparkles size={20} color="var(--accent-cyan)" />
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Modal Header */}
+        <div
+          style={{
+            padding: '18px 24px',
+            borderBottom: '1px solid var(--border-subtle)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'linear-gradient(90deg, var(--bg-badge) 0%, transparent 100%)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '8px',
+                background: 'var(--bg-badge)',
+                border: '1px solid var(--border-subtle)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Sparkles size={20} color="var(--accent-primary)" />
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}>
+                <h2
+                  style={{
+                    fontSize: '1.2rem',
+                    fontWeight: 800,
+                    color: 'var(--text-primary)',
+                    fontFamily: "'Outfit', sans-serif",
+                    letterSpacing: '-0.02em',
+                  }}
+                >
                   DEOC Action Brief & Citizen Advisory
                 </h2>
                 <span className="badge badge-critical" style={{ fontSize: '0.65rem' }}>
-                  GROUNDED GEMINI REASONING
+                  GEMINI GROUNDED
                 </span>
               </div>
-              <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                Evidence ID: {advisory.advisory_id} • Target: Puri Coast Landfall • CAP Protocol v1.2
+              <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                Advisory ID: {advisory.advisory_id} • Target: Puri Coast Landfall • CAP Protocol v1.2
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
+            className="btn-secondary"
             style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: 'none',
-              borderRadius: '6px',
               padding: '6px',
+              borderRadius: '8px',
+              lineHeight: 0,
               cursor: 'pointer',
-              color: 'var(--text-secondary)',
             }}
+            aria-label="Close advisory"
           >
             <X size={18} />
           </button>
@@ -179,23 +193,24 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
         <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
           {/* Situation Summary */}
-          <div style={{
-            background: 'rgba(15, 23, 42, 0.7)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '10px',
-            padding: '14px 18px',
-          }}>
-            <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--accent-cyan)', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.04em' }}>
-              DEOC SITUATION SUMMARY (GROUNDED IN GEE & IMD DATA)
+          <div
+            className="interactive-card"
+            style={{
+              padding: '16px 20px',
+              borderLeft: '4px solid var(--accent-primary)',
+            }}
+          >
+            <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--accent-primary)', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.04em' }}>
+              DEOC SITUATION SUMMARY (GEE & IMD SATELLITE TELEMETRY)
             </div>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-primary)', lineHeight: 1.55 }}>
               {advisory.situation_summary}
             </p>
           </div>
 
           {/* Priority Actions with Evidence Citations */}
           <div>
-            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Outfit', sans-serif" }}>
               Actionable Pre-Landfall Directives
             </div>
 
@@ -203,44 +218,36 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
               {advisory.priority_actions.map((action, idx) => (
                 <div
                   key={idx}
+                  className="interactive-card"
                   style={{
-                    background: 'rgba(15, 23, 42, 0.65)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '8px',
-                    padding: '10px 14px',
+                    padding: '12px 16px',
                     display: 'flex',
                     alignItems: 'flex-start',
                     justifyContent: 'space-between',
                     gap: '12px',
+                    borderRadius: '10px',
                   }}
                 >
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Outfit', sans-serif" }}>
                         {action.target_name}
                       </span>
                       <span className="badge badge-critical" style={{ fontSize: '0.62rem' }}>
                         {action.urgency}
                       </span>
                     </div>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                       {action.action}
                     </p>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', alignItems: 'flex-end', flexShrink: 0 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end', flexShrink: 0 }}>
                     {action.evidence_ids.map((ev, i) => (
                       <span
                         key={i}
-                        style={{
-                          fontSize: '0.64rem',
-                          fontFamily: 'var(--font-mono)',
-                          background: 'rgba(56, 189, 248, 0.12)',
-                          color: '#7dd3fc',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          border: '1px solid rgba(56, 189, 248, 0.25)',
-                        }}
+                        className="badge badge-tag"
+                        style={{ fontSize: '0.65rem' }}
                       >
                         [{ev}]
                       </span>
@@ -252,16 +259,16 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
           </div>
 
           {/* Multilingual Public Broadcast Alert Area */}
-          <div style={{
-            background: 'rgba(15, 23, 42, 0.8)',
-            border: '1px solid rgba(56, 189, 248, 0.25)',
-            borderRadius: '10px',
-            padding: '16px',
-          }}>
+          <div
+            className="glass-panel"
+            style={{
+              padding: '18px 20px',
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Radio size={16} color="var(--accent-cyan)" />
-                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Radio size={16} color="var(--accent-primary)" />
+                <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', fontFamily: "'Outfit', sans-serif" }}>
                   Public Early-Warning Dissemination
                 </span>
               </div>
@@ -269,27 +276,20 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
               {/* Text-to-Speech simulation button */}
               <button
                 onClick={handleToggleAudio}
+                className={isPlayingAudio ? 'btn-primary' : 'btn-outline-cyan'}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: isPlayingAudio ? 'rgba(239, 68, 68, 0.25)' : 'rgba(56, 189, 248, 0.15)',
-                  border: isPlayingAudio ? '1px solid #ef4444' : '1px solid var(--border-subtle)',
-                  color: isPlayingAudio ? '#fca5a5' : 'var(--accent-cyan)',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
+                  padding: '5px 12px',
                   fontSize: '0.74rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
+                  gap: '6px',
                 }}
               >
                 {isPlayingAudio ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                <span>{isPlayingAudio ? 'Stop Audio Broadcast' : 'Audio Readout (TTS)'}</span>
+                <span>{isPlayingAudio ? 'Stop Audio' : 'Audio TTS Preview'}</span>
               </button>
             </div>
 
             {/* Language Tabs */}
-            <div style={{ display: 'flex', gap: '6px', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
               {[
                 { id: 'en', label: 'English (Official)' },
                 { id: 'hi', label: 'हिन्दी (Hindi)' },
@@ -301,15 +301,11 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
                   <button
                     key={tab.id}
                     onClick={() => setActiveLangTab(tab.id as any)}
+                    className={isSelected ? 'btn-outline-cyan' : 'btn-secondary'}
                     style={{
-                      background: isSelected ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.05)',
-                      border: isSelected ? '1px solid var(--accent-cyan)' : '1px solid transparent',
-                      color: isSelected ? 'var(--accent-cyan)' : 'var(--text-secondary)',
                       padding: '5px 12px',
-                      borderRadius: '6px',
                       fontSize: '0.78rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
+                      background: isSelected ? 'var(--bg-badge)' : undefined,
                     }}
                   >
                     {tab.label}
@@ -327,40 +323,42 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
               rows={4}
               style={{
                 width: '100%',
-                background: 'rgba(6, 9, 19, 0.85)',
+                background: 'var(--bg-surface)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: '8px',
-                padding: '10px 14px',
+                padding: '12px 14px',
                 color: 'var(--text-primary)',
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.86rem',
+                fontFamily: 'inherit',
+                fontSize: '0.88rem',
                 lineHeight: 1.5,
                 outline: 'none',
                 resize: 'vertical',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)',
               }}
             />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              <span>* Human Officer in-the-loop: Edit content as required prior to dispatch.</span>
-              <span>Char Count: {editedAlertText[activeLangTab].length}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '6px' }}>
+              <span>* Human-in-the-loop: Verify or edit message text prior to CAP broadcast.</span>
+              <span style={{ fontFamily: 'var(--font-mono)' }}>Char Count: {editedAlertText[activeLangTab].length}</span>
             </div>
           </div>
 
-          {/* Human-in-the-Loop Approval & Dispatch Section */}
-          {!dispatchReceipt ? (
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.9)',
-              border: '1px solid rgba(16, 185, 129, 0.35)',
-              borderRadius: '10px',
-              padding: '16px',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#6ee7b7', fontSize: '0.82rem', fontWeight: 700, marginBottom: '10px' }}>
+          {/* Human-in-the-Loop Officer Credentials Section */}
+          {!dispatchReceipt && (
+            <div
+              className="interactive-card"
+              style={{
+                padding: '18px 20px',
+                borderColor: 'var(--border-subtle)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-emerald)', fontSize: '0.82rem', fontWeight: 700, marginBottom: '12px', fontFamily: "'Outfit', sans-serif" }}>
                 <Lock size={15} />
-                <span>OFFICER AUTHENTICATION & DISPATCH GATEWAY</span>
+                <span>OFFICER AUTHENTICATION & JURISDICTION</span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '3px' }}>
+                  <label style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>
                     Authorizing DEOC Officer
                   </label>
                   <input
@@ -369,20 +367,20 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
                     onChange={(e) => setOfficerName(e.target.value)}
                     style={{
                       width: '100%',
-                      background: 'rgba(6, 9, 19, 0.7)',
+                      background: 'var(--bg-surface)',
                       border: '1px solid var(--border-subtle)',
-                      borderRadius: '6px',
-                      padding: '6px 10px',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
                       color: 'var(--text-primary)',
-                      fontSize: '0.8rem',
+                      fontSize: '0.82rem',
                       outline: 'none',
                     }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '3px' }}>
-                    Officer Credentials / Station Token
+                  <label style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>
+                    Officer Station Token / ID
                   </label>
                   <input
                     type="text"
@@ -390,68 +388,49 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
                     onChange={(e) => setOfficerId(e.target.value)}
                     style={{
                       width: '100%',
-                      background: 'rgba(6, 9, 19, 0.7)',
+                      background: 'var(--bg-surface)',
                       border: '1px solid var(--border-subtle)',
-                      borderRadius: '6px',
-                      padding: '6px 10px',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.8rem',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      color: 'var(--accent-primary)',
+                      fontSize: '0.82rem',
+                      fontFamily: 'var(--font-mono)',
                       outline: 'none',
                     }}
                   />
                 </div>
               </div>
-
-              <button
-                onClick={handleApprove}
-                disabled={isDispatching}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                  color: '#ffffff',
-                  border: 'none',
-                  padding: '10px',
-                  borderRadius: '8px',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
-                  cursor: isDispatching ? 'wait' : 'pointer',
-                  boxShadow: '0 0 16px rgba(16, 185, 129, 0.4)',
-                }}
-              >
-                <Send size={16} />
-                <span>{isDispatching ? 'Encrypting & Dispatching to CAP Servers...' : 'Approve & Dispatch Public Alert (CAP Protocol)'}</span>
-              </button>
             </div>
-          ) : (
-            /* Dispatch Receipt Banner */
-            <div style={{
-              background: 'rgba(16, 185, 129, 0.15)',
-              border: '1px solid #10b981',
-              borderRadius: '10px',
-              padding: '16px',
-              animation: 'fadeIn 0.3s ease-in',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6ee7b7', fontWeight: 700, fontSize: '0.92rem', marginBottom: '8px' }}>
-                <CheckCircle2 size={20} />
+          )}
+
+          {/* Dispatch Receipt Banner if approved */}
+          {dispatchReceipt && (
+            <div
+              className="interactive-card"
+              style={{
+                background: 'var(--bg-badge)',
+                border: '1px solid var(--accent-emerald)',
+                padding: '20px',
+                animation: 'fadeIn 0.3s ease-in',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-emerald)', fontWeight: 800, fontSize: '0.96rem', marginBottom: '10px', fontFamily: "'Outfit', sans-serif" }}>
+                <CheckCircle2 size={22} />
                 <span>OFFICIAL DISPATCH CONFIRMATION RECEIPT</span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                 <div>Receipt ID: <b style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{dispatchReceipt.receipt_id}</b></div>
                 <div>Status: <span className="badge badge-safe">DISPATCHED TO NETWORKS</span></div>
                 <div>Authorized By: <b style={{ color: 'var(--text-primary)' }}>{dispatchReceipt.approved_by}</b></div>
                 <div>Timestamp: <span style={{ fontFamily: 'var(--font-mono)' }}>{dispatchReceipt.dispatched_at_utc}</span></div>
               </div>
 
-              <div style={{ marginTop: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                <div><b>Target Gateways:</b> {dispatchReceipt.dispatch_channels.join(', ')}</div>
-                <div style={{ marginTop: '4px' }}>
-                  <b>Cryptographic Audit Hash (SHA-256):</b>
-                  <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)', wordBreak: 'break-all', marginTop: '2px' }}>
+              <div style={{ marginTop: '12px', fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                <div><strong>Target Gateways:</strong> {dispatchReceipt.dispatch_channels.join(', ')}</div>
+                <div style={{ marginTop: '6px' }}>
+                  <strong>Cryptographic Audit Hash (SHA-256):</strong>
+                  <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', wordBreak: 'break-all', marginTop: '3px', background: 'var(--bg-card)', padding: '6px 10px', borderRadius: '6px' }}>
                     {dispatchReceipt.audit_hash}
                   </div>
                 </div>
@@ -459,6 +438,42 @@ export const AdvisoryModal: React.FC<AdvisoryModalProps> = ({
             </div>
           )}
 
+        </div>
+
+        {/* Standard Modal Sticky Footer with Primary Actions */}
+        <div
+          style={{
+            padding: '16px 24px',
+            borderTop: '1px solid var(--border-subtle)',
+            background: 'var(--bg-surface)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: '12px',
+          }}
+        >
+          <button
+            onClick={onClose}
+            className="btn-secondary"
+            style={{ padding: '10px 20px', fontSize: '0.88rem' }}
+          >
+            {dispatchReceipt ? 'Close Window' : 'Cancel'}
+          </button>
+
+          {!dispatchReceipt && (
+            <button
+              onClick={handleApprove}
+              disabled={isDispatching}
+              className="btn-primary"
+              style={{
+                padding: '10px 24px',
+                fontSize: '0.88rem',
+              }}
+            >
+              <Send size={16} />
+              <span>{isDispatching ? 'Cryptographically Sealing & Dispatching...' : 'Approve & Dispatch Public Alert (CAP Protocol)'}</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

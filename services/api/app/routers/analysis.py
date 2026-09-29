@@ -1,9 +1,13 @@
-from fastapi import APIRouter, Query, HTTPException
+import datetime
+from fastapi import APIRouter, Query, HTTPException, Depends
+from sqlalchemy.orm import Session
 from typing import Dict, Any, List
 from app.models.analysis import AnalysisRunRequest, AnalysisRunResponse
 from app.models.cyclone import ScenarioMetadata
 from app.services.risk.engine import run_risk_analysis
 from app.services.ingestion.ibtracs_adapter import load_fani_track
+from app.db.database import get_db
+from app.db.models import RiskAssessmentRun
 
 router = APIRouter(prefix="/api/analysis", tags=["analysis"])
 
@@ -32,10 +36,11 @@ def list_available_scenarios():
     ]
 
 @router.post("/run", response_model=AnalysisRunResponse)
-def execute_risk_analysis(req: AnalysisRunRequest):
+def execute_risk_analysis(req: AnalysisRunRequest, db: Session = Depends(get_db)):
     """
     Executes the spatial multi-hazard risk engine:
     Hazard × Exposure × Vulnerability across infrastructure and population.
+    Persists the full assessment run into the database.
     """
     try:
         response = run_risk_analysis(
@@ -43,9 +48,46 @@ def execute_risk_analysis(req: AnalysisRunRequest):
             inundation_scenario=req.inundation_scenario,
             time_step_idx=req.time_step_index or 5
         )
+
+        # Persist to database
+        run_record = RiskAssessmentRun(
+            run_id=response.analysis_id,
+            scenario_id=response.scenario_id,
+            inundation_scenario=response.inundation_scenario,
+            cyclone_name=response.cyclone_name,
+            current_time_step=response.current_time_step,
+            total_population_at_risk=response.total_population_at_risk,
+            high_risk_assets_count=len(response.top_threatened_assets),
+            district_summaries=[d.model_dump() for d in response.district_summaries],
+            top_threatened_assets=[a.model_dump() for a in response.top_threatened_assets],
+            weights_used={"hazard": 0.40, "exposure": 0.35, "vulnerability": 0.25},
+            confidence_level=response.confidence_level
+        )
+        db.add(run_record)
+        db.commit()
+
         return response
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Risk engine evaluation error: {str(e)}")
+
+@router.get("/runs/history")
+def get_assessment_history(limit: int = Query(20, ge=1, le=100), db: Session = Depends(get_db)):
+    """Returns past executed risk assessment runs from SQLite."""
+    runs = db.query(RiskAssessmentRun).order_by(RiskAssessmentRun.executed_at_utc.desc()).limit(limit).all()
+    return [
+        {
+            "run_id": r.run_id,
+            "scenario_id": r.scenario_id,
+            "cyclone_name": r.cyclone_name,
+            "inundation_scenario": r.inundation_scenario,
+            "total_population_at_risk": r.total_population_at_risk,
+            "high_risk_assets_count": r.high_risk_assets_count,
+            "confidence_level": r.confidence_level,
+            "executed_at_utc": r.executed_at_utc.isoformat() if r.executed_at_utc else datetime.datetime.utcnow().isoformat()
+        }
+        for r in runs
+    ]
 
 @router.get("/track/fani")
 def get_historical_track():

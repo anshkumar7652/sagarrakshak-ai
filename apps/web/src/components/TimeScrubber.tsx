@@ -23,83 +23,91 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
   const current = trackPoints[currentIndex] || trackPoints[0];
 
   return (
-    <div style={{
-      padding: '10px 24px',
-      background: 'rgba(6, 9, 19, 0.94)',
-      backdropFilter: 'blur(16px)',
-      borderTop: '1px solid var(--border-subtle)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '20px',
-      zIndex: 1000,
-    }}>
+    <div
+      style={{
+        padding: '12px 24px',
+        background: 'var(--bg-surface)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderTop: '1px solid var(--border-subtle)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '24px',
+        zIndex: 1000,
+      }}
+    >
       {/* Playback Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <button
           onClick={() => onSelectIndex(Math.max(0, currentIndex - 1))}
           disabled={currentIndex === 0}
+          className="btn-secondary"
           style={{
-            background: 'rgba(255, 255, 255, 0.06)',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '6px',
-            color: currentIndex === 0 ? 'var(--text-muted)' : 'var(--text-primary)',
+            padding: '6px 8px',
+            opacity: currentIndex === 0 ? 0.4 : 1,
             cursor: currentIndex === 0 ? 'default' : 'pointer',
           }}
+          aria-label="Previous step"
         >
           <SkipBack size={15} />
         </button>
 
         <button
           onClick={onTogglePlay}
+          className="btn-primary"
           style={{
-            background: 'var(--accent-cyan)',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '6px 12px',
-            color: '#060913',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            cursor: 'pointer',
+            padding: '6px 14px',
+            fontSize: '0.8rem',
+            gap: '6px',
           }}
         >
           {isPlaying ? <Pause size={15} /> : <Play size={15} />}
-          <span style={{ fontSize: '0.75rem' }}>{isPlaying ? 'Pause' : 'Simulate'}</span>
+          <span>{isPlaying ? 'Pause' : 'Simulate'}</span>
         </button>
 
         <button
           onClick={() => onSelectIndex(Math.min(trackPoints.length - 1, currentIndex + 1))}
           disabled={currentIndex === trackPoints.length - 1}
+          className="btn-secondary"
           style={{
-            background: 'rgba(255, 255, 255, 0.06)',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '6px',
-            color: currentIndex === trackPoints.length - 1 ? 'var(--text-muted)' : 'var(--text-primary)',
+            padding: '6px 8px',
+            opacity: currentIndex === trackPoints.length - 1 ? 0.4 : 1,
             cursor: currentIndex === trackPoints.length - 1 ? 'default' : 'pointer',
           }}
+          aria-label="Next step"
         >
           <SkipForward size={15} />
         </button>
       </div>
 
       {/* Current Step Readout */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '220px' }}>
-        <Clock size={16} color="var(--accent-cyan)" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '240px' }}>
+        <div
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
+            background: 'var(--bg-badge)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <Clock size={16} color="var(--accent-primary)" />
+        </div>
         <div>
-          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '0.86rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Outfit', sans-serif" }}>
             {current.stage}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
             {new Date(current.timestamp).toUTCString().slice(0, 22)} UTC
           </div>
         </div>
       </div>
 
       {/* Timeline Slider / Progress */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
         <input
           type="range"
           min={0}
@@ -109,19 +117,20 @@ export const TimeScrubber: React.FC<TimeScrubberProps> = ({
           style={{
             width: '100%',
             cursor: 'pointer',
-            accentColor: 'var(--accent-cyan)',
+            accentColor: 'var(--accent-primary)',
           }}
         />
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
           {trackPoints.map((pt, i) => (
             <span
               key={i}
               onClick={() => onSelectIndex(i)}
               style={{
                 cursor: 'pointer',
-                color: i === currentIndex ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                color: i === currentIndex ? 'var(--accent-primary)' : 'var(--text-muted)',
                 fontWeight: i === currentIndex ? 700 : 400,
+                transition: 'color 0.15s ease',
               }}
             >
               {pt.stage.split(' ')[0]}
