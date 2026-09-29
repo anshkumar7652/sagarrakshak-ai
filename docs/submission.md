@@ -39,11 +39,11 @@
 
 | Item | Requirement | Location / Reference |
 |---|---|---|
-| **Public GitHub Repository** | Complete codebase, documentation, tests, and MIT license | Ready in workspace root |
-| **Working Prototype URL** | Live accessible web application | `http://localhost:3000` (Local) / Vercel deployment |
-| **Pitch Deck (10–12 Slides)** | Problem, Solution, AI Depth, Reach across India, Impact | [`docs/pitch-deck.md`](file:///c:/ANSH(DRIVE-D)/Workspace-01/Projects/sagarrakshak-ai/docs/pitch-deck.md) |
+| **Public GitHub Repository** | Complete codebase, documentation, tests, and MIT license | [github.com/anshkumar7652/sagarrakshak-ai](https://github.com/anshkumar7652/sagarrakshak-ai) |
+| **Working Prototype URL** | Live accessible web application | [sagarrakshak-ai.vercel.app](https://sagarrakshak-ai.vercel.app) |
+| **Interactive Pitch Deck** | 11-slide deck with Chart.js and dark glass UI | [sagarrakshak-ai.vercel.app/slides](https://sagarrakshak-ai.vercel.app/slides) (also in [`docs/pitch-deck.md`](file:///c:/ANSH(DRIVE-D)/Workspace-01/Projects/sagarrakshak-ai/docs/pitch-deck.md)) |
 | **Working Demo Video (3–5 Min)** | Full hero workflow demonstration with voiceover | [`docs/demo-script.md`](file:///c:/ANSH(DRIVE-D)/Workspace-01/Projects/sagarrakshak-ai/docs/demo-script.md) |
 | **Judging Evidence Matrix** | 1:1 mapping of official rubric criteria to code | [`docs/judging-evidence.md`](file:///c:/ANSH(DRIVE-D)/Workspace-01/Projects/sagarrakshak-ai/docs/judging-evidence.md) |
-| **Automated Test Suite** | Unit & integration tests for risk engine and schemas | `pytest` (10/10 tests passing) |
+| **Automated Test Suite** | Unit & integration tests for risk engine and schemas | `pytest` (16/16 tests passing) |
 | **Data Cards & Model Card** | Sources, licenses, update frequencies, and limitations | [`docs/data-cards.md`](file:///c:/ANSH(DRIVE-D)/Workspace-01/Projects/sagarrakshak-ai/docs/data-cards.md), [`docs/model-card.md`](file:///c:/ANSH(DRIVE-D)/Workspace-01/Projects/sagarrakshak-ai/docs/model-card.md) |
 | **Responsible AI Guidelines** | Human-in-the-loop, anti-panic standards, SHA-256 CAP receipts | [`docs/responsible-ai.md`](file:///c:/ANSH(DRIVE-D)/Workspace-01/Projects/sagarrakshak-ai/docs/responsible-ai.md) |

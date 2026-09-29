@@ -9,7 +9,13 @@
 [![Google Earth Engine](https://img.shields.io/badge/Google%20Earth%20Engine-Planetary%20Data-4285F4?style=flat&logo=google)](https://earthengine.google.com)
 [![Gemini AI](https://img.shields.io/badge/Gemini%20Flash-Grounded%20Reasoning-8E75C2?style=flat&logo=google)](https://ai.google.dev)
 [![Tests Passing](https://img.shields.io/badge/Tests-16%2F16%20Passing-10b981?style=flat)]()
+[![Live Prototype](https://img.shields.io/badge/Live%20Prototype-sagarrakshak--ai.vercel.app-00dfa2?style=flat&logo=vercel)](https://sagarrakshak-ai.vercel.app)
+[![Pitch Deck](https://img.shields.io/badge/Pitch%20Deck-Interactive%20Slides-blueviolet?style=flat)](https://sagarrakshak-ai.vercel.app/slides)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> 🚀 **Live Production Prototype:** [https://sagarrakshak-ai.vercel.app](https://sagarrakshak-ai.vercel.app)  
+> 📊 **Interactive Pitch Deck:** [https://sagarrakshak-ai.vercel.app/slides](https://sagarrakshak-ai.vercel.app/slides)  
+> 🗺️ **Operational Command Dashboard:** [https://sagarrakshak-ai.vercel.app/dashboard](https://sagarrakshak-ai.vercel.app/dashboard)
 
 ---
 
